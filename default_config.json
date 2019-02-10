@@ -1,0 +1,47 @@
+{
+	"characters": 
+	{
+		"Knight":
+		{
+			"sym": 75,
+			"max_hp": 15,
+			"damage": 1,
+			"solid": true
+		},
+		"Princess":
+		{
+			"sym": 80,
+			"max_hp": 1,
+			"damage": 0,
+			"solid": true
+		},
+		"Zombie":
+		{
+			"sym": 90,
+			"max_hp": 3,
+			"damage": 1,
+			"solid": true
+		},
+		"Dragon":
+		{
+			"sym": 68,
+			"max_hp": 15,
+			"damage": 2,
+			"solid": true
+		},
+		"Wall":
+		{
+			"sym": 35,
+			"max_hp": 1,
+			"damage": 0,
+			"solid": true
+		},
+		"AidKit":
+		{
+			"sym": 43,
+			"max_hp": 1,
+			"damage": -15,
+			"solid": true
+		}
+	}
+}
