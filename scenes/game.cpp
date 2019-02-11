@@ -1,6 +1,8 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+#define FMT_HEADER_ONLY
 #include "game.h"
+#include <fmt/format.h>
 #include "../graphics.h"
 
 namespace scenes {
@@ -123,7 +125,15 @@ void game::render() {
       engine::draw_sym(sym, j, i);
     }
   }
-  engine::draw_sym(h->sym(), h->pos().x, h->pos().y);
-  engine::write_string("HP: " + std::to_string(h->hp()), 0, 23); // TODO get window height
+
+  auto h_pos = h->pos();
+  engine::draw_sym(h->sym(), h_pos.x, h_pos.y);
+
+  auto hp_str = fmt::format("HP: {}/{}", h->hp(), h->max_hp());
+  engine::write_string(hp_str, 0, engine::height()-1);
+#ifdef DEBUG
+  auto pos_str = fmt::format("Pos: ({};{})", h_pos.x, h_pos.y);
+  engine::write_string(pos_str, 80 - pos_str.size(), engine::height()-1);
+#endif
 }
 }
