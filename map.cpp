@@ -49,9 +49,6 @@ std::shared_ptr<characters::Character> map::at(map_size_t x, map_size_t y) {
   }
   return nullptr;
 }
-std::shared_ptr<characters::Character> map::at(const map_point& pos) {
-  return at(pos.x, pos.y);
-}
 
 namespace map_generators {
 map_container box(map_size_t w, map_size_t h) {

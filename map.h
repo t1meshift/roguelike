@@ -28,7 +28,6 @@ class map {
   std::shared_ptr<characters::Character> &hero();
   chars_container &characters();
   std::shared_ptr<characters::Character> at(map_size_t x, map_size_t y);
-  std::shared_ptr<characters::Character> at(const map_point &pos);
 
   void resize(map_size_t w, map_size_t h);
 

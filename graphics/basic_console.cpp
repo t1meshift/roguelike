@@ -21,15 +21,15 @@ void init_graphics() {
 }
 void shutdown_graphics() {}
 int width() {
-  return 80;
+  return buff[0].size();
 }
 int height() {
-  return 24;
+  return buff.size();
 }
 
 void draw_sym(sym_t symbol, int x, int y) {
-  if (y < 0 && y >= buff.size()) return;
-  if (x < 0 && x >= buff[y].size()) return;
+  if (y < 0 || y >= buff.size()) return;
+  if (x < 0 || x >= buff[y].size()) return;
   buff[y][x] = symbol;
 }
 
