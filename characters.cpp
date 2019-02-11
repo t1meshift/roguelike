@@ -63,7 +63,7 @@ void init_from_config(Character &c, const std::string &char_name) {
   auto character_conf = conf.characters().get(char_name); // TODO could be typeid().name(), it's not that slow
   c.sym(character_conf.sym);
   c.hp(character_conf.max_hp);
-  c.
+  c.max_hp(character_conf.max_hp);
   c.damage(character_conf.damage);
   c.solid(character_conf.solid);
 }
