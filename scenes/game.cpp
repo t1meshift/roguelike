@@ -37,6 +37,11 @@ void game::input(int command) {
     default:
       break;
   }
+  auto hpos = hero->pos();
+  if (hpos.x < 0 || hpos.x >= map_.width() ||
+    hpos.y < 0 || hpos.y >= map_.height()) {
+    hero->place(hero_prev_pos_.x, hero_prev_pos_.y);
+  }
 }
 void game::tick() {
   bool level_won = false;
