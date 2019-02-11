@@ -72,6 +72,11 @@ void game::tick() {
     // TODO field of view of characters for characters
     auto prev_pos = chars[i]->pos();
     chars[i]->tick(hero->pos());
+    auto cpos = chars[i]->pos();
+    if (cpos.x < 0 || cpos.x >= map_.width() ||
+        cpos.y < 0 || cpos.y >= map_.height()) {
+      chars[i]->place(hero_prev_pos_.x, hero_prev_pos_.y);
+    }
     // Check collisions after each tick
     for (int j = 0; j < chars.size(); ++j) {
       if (i == j) continue;
