@@ -34,56 +34,65 @@ void game::input(int command) {
   }
 }
 void game::tick() {
-  std::vector<std::pair<map_point, bool>> prev_pos;
-  bool hero_collided = false;
   bool level_won = false;
   auto &chars = map_.characters();
   auto &hero = map_.hero();
 
-  for (auto &character : chars) {
-    // TODO field of view of characters for characters
-    prev_pos.emplace_back(character->pos(), false);
-    character->tick(hero->pos());
+  // Cleaning up
+  // FIXME the existence of this snippet is questionable
+  for (auto it = chars.begin(); it != chars.end(); ++it) {
+    if ((*it) == nullptr) {
+      chars.erase(it);
+    }
   }
-  // Collide player first...
-  for (int i = 0; i < chars.size(); ++i) {
-    if (hero->pos() == chars[i]->pos()) {
+
+  // Hero collisions
+  for (auto &i : chars) {
+    if (hero->pos() == i->pos()) {
       namespace char_vis = characters::visitors;
+      char_vis::wall_visitor wall;
+      hero->accept(wall, *i);
+      if (wall.collided()) {
+        hero->place(hero_prev_pos_.x, hero_prev_pos_.y);
+      }
       char_vis::attack_visitor attack;
       char_vis::win_cond_visitor win_cond;
-      hero->accept(attack, *chars[i]);
-      hero->accept(win_cond, *chars[i]);
+      hero->accept(attack, *i);
+      hero->accept(win_cond, *i);
       level_won = win_cond.won();
-      hero_collided = true;
-      prev_pos[i].second = true;
+      hero->place(hero_prev_pos_.x, hero_prev_pos_.y);
     }
   }
-  // ...then collide other chars
+  // Move mobs then collide them
   for (int i = 0; i < chars.size(); ++i) {
-    for (int j = i + 1; j < chars.size(); ++j) {
+    // TODO field of view of characters for characters
+    auto prev_pos = chars[i]->pos();
+    chars[i]->tick(hero->pos());
+    // Check collisions after each tick
+    for (int j = 0; j < chars.size(); ++j) {
+      if (i == j) continue;
       if (chars[i]->pos() == chars[j]->pos()) {
         namespace char_vis = characters::visitors;
+        char_vis::wall_visitor wall;
+        chars[i]->accept(wall, *chars[j]);
+        if (wall.collided()) {
+          chars[i]->place(prev_pos.x, prev_pos.y);
+        }
         char_vis::attack_visitor attack;
         chars[i]->accept(attack, *chars[j]);
-        prev_pos[i].second = true;
-        prev_pos[j].second = true;
+        chars[i]->place(prev_pos.x, prev_pos.y);
       }
     }
   }
-  // Check chars if they are collided or even dead...
-  for (int i = 0; i < chars.size(); ++i) {
-    if (prev_pos[i].second) {
-      chars[i]->place(prev_pos[i].first.x, prev_pos[i].first.y);
-      if (chars[i]->is_dead()) {
-        chars[i].reset();
-        chars[i] = nullptr;
-      }
+
+  // Check chars if mobs are dead...
+  for (auto &i : chars) {
+    if (i->is_dead()) {
+      i.reset();
+      i = nullptr;
     }
   }
-  // ...then hero
-  if (hero_collided) {
-    hero->place(hero_prev_pos_.x, hero_prev_pos_.y);
-  }
+
   if (hero->is_dead()) {
     // TODO ЖАМЕ ЫВЕЯ
     finished_ = true;

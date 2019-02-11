@@ -114,49 +114,94 @@ Wall::Wall(map_size_t x, map_size_t y) {
 Wall::Wall(map_point pos) : Wall(pos.x, pos.y) {}
 
 namespace visitors {
+void wall_visitor::visit(Character &a, Character &b) {
+  if (collided_) return;
+  a.accept(*this, b);
+}
+void wall_visitor::visit(Knight &a, Character &b) {
+  if (collided_) return;
+  b.accept(*this, a);
+}
+void wall_visitor::visit(Princess &a, Character &b) {
+  if (collided_) return;
+  b.accept(*this, a);
+}
+void wall_visitor::visit(Wall &a, Character &b) {
+  collided_ = true;
+}
+void wall_visitor::visit(Zombie &a, Character &b) {
+  if (collided_) return;
+  b.accept(*this, a);
+}
+void wall_visitor::visit(Dragon &a, Character &b) {
+  if (collided_) return;
+  b.accept(*this, a);
+}
+void wall_visitor::visit(Knight &a, Wall &b) {
+  collided_ = true;
+}
+void wall_visitor::visit(Princess &a, Wall &b) {
+  collided_ = true;
+}
+void wall_visitor::visit(Zombie &a, Wall &b) {
+  collided_ = true;
+}
+void wall_visitor::visit(Dragon &a, Wall &b) {
+  collided_ = true;
+}
+void wall_visitor::visit(Wall &a, Wall &b) {
+  collided_ = true;
+}
+void wall_visitor::visit(Wall &a, Knight &b) {
+  collided_ = true;
+}
+void wall_visitor::visit(Wall &a, Princess &b) {
+  collided_ = true;
+}
+void wall_visitor::visit(Wall &a, Zombie &b) {
+  collided_ = true;
+}
+void wall_visitor::visit(Wall &a, Dragon &b) {
+  collided_ = true;
+}
+bool wall_visitor::collided() const {
+  return collided_;
+}
+
 void attack_visitor::visit(Character &a, Character &b) {
   if (done_) return;
   a.accept(*this, b);
 }
 void attack_visitor::visit(Wall &a, Character &b) {
   if (done_) return;
+  a.hurt(b.damage());
+  done_ = true;
   b.accept(*this, a);
 }
 void attack_visitor::visit(Princess &a, Character &b) {
   if (done_) return;
+  a.hurt(b.damage());
+  done_ = true;
   b.accept(*this, a);
 }
 void attack_visitor::visit(Zombie &a, Character &b) {
   if (done_) return;
+  a.hurt(b.damage());
+  done_ = true;
   b.accept(*this, a);
 }
 void attack_visitor::visit(Dragon &a, Character &b) {
   if (done_) return;
+  a.hurt(b.damage());
+  done_ = true;
   b.accept(*this, a);
 }
-
 void attack_visitor::visit(Knight &a, Character &b) {
   if (done_) return;
   a.hurt(b.damage());
-  b.hurt(a.damage());
   done_ = true;
   b.accept(*this, a);
 }
-void attack_visitor::visit(Character &a, Knight &b) {
-  if (done_) return;
-  a.hurt(b.damage());
-  b.hurt(a.damage());
-  done_ = true;
-  b.accept(*this, a);
-}
-void attack_visitor::visit(Monster &a, Monster &b) {
-  if (done_) return;
-  a.hurt(b.damage());
-  b.hurt(a.damage());
-  done_ = true;
-  b.accept(*this, a);
-}
-
 
 void win_cond_visitor::visit(Character &a, Character &b) {
   if (won_) return;
@@ -182,8 +227,6 @@ void win_cond_visitor::visit(Dragon &a, Character &b) {
   if (won_) return;
   a.accept(*this, b);
 }
-
-
 void win_cond_visitor::visit(Knight &a, Princess &b) {
   if (!a.is_dead()) won_ = true;
 }

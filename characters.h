@@ -66,6 +66,27 @@ class base_visitor {
   virtual void visit(Dragon&, Character&) = 0;
   
 };
+class wall_visitor : public base_visitor {
+ public:
+  virtual bool collided() const;
+  void visit(Character &a, Character &b) override;
+  void visit(Knight &a, Character &b) override;
+  void visit(Princess &a, Character &b) override;
+  void visit(Wall&, Character&) override;
+  void visit(Zombie&, Character&) override;
+  void visit(Dragon&, Character&) override;
+  void visit(Knight &a, Wall &b) override;
+  void visit(Princess &a, Wall &b) override;
+  void visit(Zombie &a, Wall &b) override;
+  void visit(Dragon &a, Wall &b) override;
+  void visit(Wall &a, Wall &b) override;
+  void visit(Wall &a, Knight &b) override;
+  void visit(Wall &a, Princess &b) override;
+  void visit(Wall &a, Zombie &b) override;
+  void visit(Wall &a, Dragon &b) override;
+ private:
+  bool collided_ = false;
+};
 class attack_visitor : public base_visitor {
  public:
   void visit(Character &a, Character &b) override;
@@ -74,10 +95,6 @@ class attack_visitor : public base_visitor {
   void visit(Wall&, Character&) override;
   void visit(Zombie&, Character&) override;
   void visit(Dragon&, Character&) override;
-
-
-  virtual void visit(Character &a, Knight &b);
-  virtual void visit(Monster &a, Monster &b);
  private:
   bool done_ = false;
 };
