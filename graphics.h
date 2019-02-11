@@ -3,6 +3,9 @@
 
 namespace graphics {
   void init();
+
+  int width();
+  int height();
   void draw_state(game &state);
   void render_frame();
 

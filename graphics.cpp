@@ -8,6 +8,12 @@ void init() {
   atexit(engine::shutdown_graphics);
 }
 
+int width() {
+  return engine::width();
+}
+int height() {
+  return engine::height();
+}
 void render_frame() {
   engine::flush_screen();
   engine::render_frame();

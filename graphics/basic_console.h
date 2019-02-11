@@ -12,6 +12,8 @@ void flush_buff();
 void flush_screen();
 void init_graphics();
 void shutdown_graphics();
+int width();
+int height();
 void draw_sym(sym_t symbol, int x, int y);
 void write_string(const std::string &str, int x, int y);
 void render_frame();

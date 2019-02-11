@@ -20,6 +20,13 @@ void init_graphics() {
   flush_buff();
 }
 void shutdown_graphics() {}
+int width() {
+  return 80;
+}
+int height() {
+  return 24;
+}
+
 void draw_sym(sym_t symbol, int x, int y) {
   if (y < 0 && y >= buff.size()) return;
   if (x < 0 && x >= buff[y].size()) return;
