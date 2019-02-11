@@ -77,6 +77,7 @@ void game::tick() {
         cpos.y < 0 || cpos.y >= map_.height()) {
       chars[i]->place(hero_prev_pos_.x, hero_prev_pos_.y);
     }
+    if (cpos == prev_pos) continue;
     // Check collisions after each tick
     for (int j = 0; j < chars.size(); ++j) {
       if (i == j) continue;
@@ -112,7 +113,7 @@ void game::tick() {
   // ...ahem, no, he just goes to the next level
   if (level_won) {
     auto hero_hp = hero->hp();
-    map_.regenerate(map_generators::box);
+    map_.regenerate(map_generators::snake);
     hero->hp(hero_hp);
   }
 
@@ -158,6 +159,7 @@ void game::render() {
 }
 
 void game::calc_offsets() {
+  // FIXME hero is out of sight when gone downwards or rightwards
   const auto field_w = graphics::width();
   const auto field_h = graphics::height() - 1;
   const auto center_rect_w = field_w / 3;

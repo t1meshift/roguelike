@@ -15,12 +15,13 @@ typedef std::function<map_container(map_size_t, map_size_t)> map_generator;
 
 namespace map_generators {
 map_container box(map_size_t w, map_size_t h);
+map_container snake(map_size_t w, map_size_t h);
 }
 
 class map {
  public:
   map();
-  map(map_size_t width, map_size_t height, map_generator gen = map_generators::box);
+  map(map_size_t width, map_size_t height, map_generator gen = map_generators::snake);
 
   map_size_t width() const;
   map_size_t height() const;

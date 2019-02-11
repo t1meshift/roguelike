@@ -13,7 +13,7 @@ using namespace std::literals::chrono_literals;
 int main() {
   Config::init();
   graphics::init();
-  auto init_scene = std::make_shared<scenes::game>(scenes::game(80, 23));
+  auto init_scene = std::make_shared<scenes::game>(scenes::game(120, 120));
   game state(init_scene);
   int key_code;
 #ifndef NO_REAL_TIME

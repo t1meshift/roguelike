@@ -99,6 +99,65 @@ map_container box(map_size_t w, map_size_t h) {
   }
 
   return result;
+}
+map_container snake(map_size_t w, map_size_t h) {
+  typedef enum {
+    floor = 0,
+    wall
+  } map_block;
+  using std::vector;
+  map_container result;
+  auto blocks = vector<vector<map_block>>(h, vector<map_block>(w, map_block::floor));
+
+  // draw borders of the box
+  for (map_size_t i = 0; i < w; ++i) {
+    blocks[0][i] = map_block::wall;
+    blocks[h-1][i] = map_block::wall;
+  }
+  for (map_size_t i = 0; i < h; ++i) {
+    blocks[i][0] = map_block::wall;
+    blocks[i][w-1] = map_block::wall;
+  }
+
+  // draw lines
+  for (map_size_t i = 1; i < h-2; ++i) {
+    for (map_size_t j = 2; j < w; j += 2) {
+      blocks[i + (j % 4 == 0)][j] = map_block::wall;
+    }
+  }
+  // spawn the player somewhere
+  PRNG rand;
+  map_point pos_hero{1, 1}, pos_princess{};
+
+  pos_princess.x = w-1;
+  pos_princess.y = 1;
+  if (w % 4 == 0) {
+    pos_princess.y = h-1;
+  }
+
+  result.hero = std::make_shared<characters::Knight>(pos_hero);
+  result.characters.push_back(std::make_shared<characters::Princess>(pos_princess));
+  for (map_size_t i = 0; i < h; ++i) {
+    for (map_size_t j = 0; j < w; ++j) {
+      if (blocks[i][j] == map_block::wall) {
+        result.characters.push_back(std::make_shared<characters::Wall>(j, i));
+      }
+    }
+  }
+
+  for (int i = 0; i < w*h/64; ++i) {
+    map_point pos_zombie{};
+    pos_zombie.x = rand.get<map_size_t>(1, w - 2);
+    pos_zombie.y = rand.get<map_size_t>(1, h - 2);
+    if (blocks[pos_zombie.y][pos_zombie.x] == map_block::wall) continue;
+    if (rand.get(1, 100) >= 50)
+      result.characters.push_back(std::make_shared<characters::Zombie>(pos_zombie));
+    else
+      result.characters.push_back(std::make_shared<characters::Dragon>(pos_zombie));
+  }
+
+  return result;
+
 };
 }
 
