@@ -48,10 +48,11 @@ void game::tick() {
   auto &chars = map_.characters();
   auto &hero = map_.hero();
 
+  namespace char_vis = characters::visitors;
+
   // Hero collisions
   for (auto &i : chars) {
     if (hero->pos() == i->pos()) {
-      namespace char_vis = characters::visitors;
       char_vis::wall_visitor wall;
       hero->accept(wall, *i);
       if (wall.collided()) {
@@ -81,10 +82,16 @@ void game::tick() {
     }
     if (cpos == prev_pos) continue;
     // Check collisions after each tick
+    if (chars[i]->pos() == hero->pos()) {
+      char_vis::attack_visitor attack;
+      chars[i]->accept(attack, *hero);
+      if (!hero->is_dead()) {
+        chars[i]->place(prev_pos.x, prev_pos.y);
+      }
+    }
     for (int j = 0; j < chars.size(); ++j) {
       if (i == j) continue;
       if (chars[i]->pos() == chars[j]->pos()) {
-        namespace char_vis = characters::visitors;
         char_vis::wall_visitor wall;
         chars[i]->accept(wall, *chars[j]);
         if (wall.collided()) {
@@ -163,7 +170,6 @@ void game::render() {
 }
 
 void game::calc_offsets() {
-  // FIXME hero is out of sight when gone downwards or rightwards
   const auto field_w = graphics::width();
   const auto field_h = graphics::height() - 1;
   const auto center_rect_w = field_w / 3;
