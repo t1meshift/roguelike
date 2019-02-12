@@ -1,5 +1,5 @@
 # Roguelike
 ## TODO:
-  + `ncurses` graphics & input
   + Unit tests
+  + Mobs' AI
   + A lot of other features

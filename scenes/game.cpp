@@ -27,7 +27,16 @@ void game::input(int command) {
   } else if (command == Key::ARROW_RIGHT) {
     hero->move(1, 0);
   }
-
+  // TODO cast fireball on key press
+  auto hero_projs = hero->projectiles();
+  for (auto &proj : hero_projs) {
+    auto p = proj->pos();
+    if (p.x >= 0 && p.x < map_.width() &&
+        p.y >= 0 && p.y < map_.height()) {
+      map_.characters().push_back(proj);
+    }
+  }
+  hero_projs.clear();
   auto hpos = hero->pos();
   if (hpos.x < 0 || hpos.x >= map_.width() ||
     hpos.y < 0 || hpos.y >= map_.height()) {
@@ -88,6 +97,15 @@ void game::tick() {
     auto prev_pos = chars[i]->pos();
     if (key_pressed_ || chars[i]->is_projectile()) {
       chars[i]->tick(hero->pos());
+      auto char_projs = chars[i]->projectiles();
+      for (auto &proj : char_projs) {
+        auto p = proj->pos();
+        if (p.x >= 0 && p.x < map_.width() &&
+            p.y >= 0 && p.y < map_.height()) {
+          map_.characters().push_back(proj);
+        }
+      }
+      char_projs.clear();
       auto cpos = chars[i]->pos();
       if (cpos.x < 0 || cpos.x >= map_.width() ||
           cpos.y < 0 || cpos.y >= map_.height()) {

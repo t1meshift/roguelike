@@ -51,6 +51,11 @@ void Character::hurt(hp_t amount) {
     hp_ = max_hp_;
   }
 }
+std::vector<std::shared_ptr<Character>> Character::projectiles() {
+  auto ret = spawned_projectiles_;
+  spawned_projectiles_.clear();
+  return ret;
+}
 
 void init_from_config(Character &c, const std::string &char_name) {
   auto &conf = Config::get();
@@ -98,6 +103,44 @@ Dragon::Dragon(map_size_t x, map_size_t y) {
   init_from_config(*this, "Dragon");
 }
 Dragon::Dragon(map_point pos) : Dragon(pos.x, pos.y) {}
+void Dragon::tick(map_point hero_pos) {
+  PRNG gen;
+  auto fireball_chance = gen.get(1, 10) == 1;
+  if (fireball_chance) {
+    if (hero_pos.x == pos_.x) {
+      if (hero_pos.y > pos_.y) {
+        auto fireball = std::make_shared<Fireball>(pos_.x, pos_.y + 1, 0, 1);
+        spawned_projectiles_.push_back(fireball);
+        return;
+      } else if (hero_pos.y < pos_.y) {
+        auto fireball = std::make_shared<Fireball>(pos_.x, pos_.y - 1, 0, -1);
+        spawned_projectiles_.push_back(fireball);
+        return;
+      }
+    } else if (hero_pos.y == pos_.y) {
+      if (hero_pos.x > pos_.x) {
+        auto fireball = std::make_shared<Fireball>(pos_.x + 1, pos_.y, 1, 0);
+        spawned_projectiles_.push_back(fireball);
+        return;
+      } else if (hero_pos.x < pos_.x) {
+        auto fireball = std::make_shared<Fireball>(pos_.x - 1, pos_.y, -1, 0);
+        spawned_projectiles_.push_back(fireball);
+        return;
+      }
+    }
+  }
+  if (hero_pos.x > pos_.x) {
+    move(1, 0);
+  } else if (hero_pos.x < pos_.x) {
+    move(-1, 0);
+  } else {
+    if (hero_pos.y > pos_.y) {
+      move(0, 1);
+    } else if (hero_pos.y < pos_.y) {
+      move(0, -1);
+    }
+  }
+}
 
 Wall::Wall(map_size_t x, map_size_t y) {
   pos_ = {x, y};
@@ -117,6 +160,28 @@ AidKit::AidKit(map_size_t x, map_size_t y) {
   init_from_config(*this, "AidKit");
 }
 AidKit::AidKit(map_point pos) : AidKit(pos.x, pos.y) {}
+hp_t AidKit::damage() const {
+  return damage_;
+}
+
+void Projectile::speed(map_size_t dx, map_size_t dy) {
+  speed_x_ = dx;
+  speed_y_ = dy;
+}
+void Projectile::tick(map_point) {
+  pos_.x += speed_x_;
+  pos_.y += speed_y_;
+}
+
+Fireball::Fireball(map_size_t x, map_size_t y) {
+  pos_ = {x, y};
+  init_from_config(*this, "Fireball");
+}
+Fireball::Fireball(map_size_t x, map_size_t y, map_size_t dx, map_size_t dy)
+  : Fireball(x, y) {
+  speed(dx, dy);
+}
+Fireball::Fireball(map_point pos) : Fireball(pos.x, pos.y) {}
 
 namespace visitors {
 void wall_visitor::visit(Character &a, Character &b) {
@@ -146,6 +211,10 @@ void wall_visitor::visit(AidKit &a, Character &b) {
   if (collided_) return;
   b.accept(*this, a);
 }
+void wall_visitor::visit(Fireball &a, Character &b) {
+  if (collided_) return;
+  b.accept(*this, a);
+}
 void wall_visitor::visit(Knight &a, Wall &b) {
   collided_ = true;
 }
@@ -172,6 +241,14 @@ void wall_visitor::visit(Wall &a, Zombie &b) {
 }
 void wall_visitor::visit(Wall &a, Dragon &b) {
   collided_ = true;
+}
+void wall_visitor::visit(Fireball &a, Wall &b) {
+  collided_ = true;
+  a.hp(0);
+}
+void wall_visitor::visit(Wall &a, Fireball &b) {
+  collided_ = true;
+  b.hp(0);
 }
 bool wall_visitor::collided() const {
   return collided_;
@@ -217,6 +294,12 @@ void attack_visitor::visit(AidKit &a, Character &b) {
   done_ = true;
   b.accept(*this, a);
 }
+void attack_visitor::visit(Fireball &a, Character &b) {
+  b.hurt(a.damage());
+  a.hp(0);
+  done_ = true;
+  b.accept(*this, a);
+}
 void attack_visitor::visit(Knight &a, AidKit &b) {
   if (done_) return;
   a.hurt(b.damage());
@@ -257,6 +340,50 @@ void attack_visitor::visit(AidKit &a, Dragon &b) {
   if (!done_) b.hurt(a.damage());
   a.pick_up();
 }
+void attack_visitor::visit(Fireball &a, Knight &b) {
+  if (!done_) b.hurt(a.damage());
+  a.hp(0);
+}
+void attack_visitor::visit(Fireball &a, Princess &b) {
+  if (!done_) b.hurt(a.damage());
+  a.hp(0);
+}
+void attack_visitor::visit(Fireball &a, Zombie &b) {
+  if (!done_) b.hurt(a.damage());
+  a.hp(0);
+}
+void attack_visitor::visit(Fireball &a, Dragon &b) {
+  if (!done_) b.hurt(a.damage());
+  a.hp(0);
+}
+void attack_visitor::visit(Knight &a, Fireball &b) {
+  if (!done_) a.hurt(a.damage());
+  b.hp(0);
+}
+void attack_visitor::visit(Princess &a, Fireball &b) {
+  if (!done_) a.hurt(a.damage());
+  b.hp(0);
+}
+void attack_visitor::visit(Zombie &a, Fireball &b) {
+  if (!done_) a.hurt(a.damage());
+  b.hp(0);
+}
+void attack_visitor::visit(Dragon &a, Fireball &b) {
+  if (!done_) a.hurt(a.damage());
+  b.hp(0);
+}
+void attack_visitor::visit(AidKit &a, Fireball &b) {
+  a.pick_up();
+  b.hp(0);
+}
+void attack_visitor::visit(Fireball &a, AidKit &b) {
+  b.pick_up();
+  a.hp(0);
+}
+void attack_visitor::visit(Fireball &a, Fireball &b) {
+  a.hp(0);
+  b.hp(0);
+}
 
 void win_cond_visitor::visit(Character &a, Character &b) {
   if (won_) return;
@@ -286,6 +413,10 @@ void win_cond_visitor::visit(AidKit &a, Character &b) {
   if (won_) return;
   b.accept(*this, a);
 }
+void win_cond_visitor::visit(Fireball &a, Character &b) {
+  if (won_) return;
+  b.accept(*this, a);
+}
 void win_cond_visitor::visit(Knight &a, Princess &b) {
   if (!a.is_dead()) won_ = true;
 }
@@ -299,35 +430,48 @@ void base_visitor::visit(Wall&, Knight&){}
 void base_visitor::visit(Zombie&, Knight&){}
 void base_visitor::visit(Dragon&, Knight&){}
 void base_visitor::visit(AidKit&, Knight&){}
+void base_visitor::visit(Fireball&, Knight&){}
 void base_visitor::visit(Knight&, Princess&){}
 void base_visitor::visit(Princess&, Princess&){}
 void base_visitor::visit(Wall&, Princess&){}
 void base_visitor::visit(Zombie&, Princess&){}
 void base_visitor::visit(Dragon&, Princess&){}
 void base_visitor::visit(AidKit&, Princess&){}
+void base_visitor::visit(Fireball&, Princess&){}
 void base_visitor::visit(Knight&, Wall&){}
 void base_visitor::visit(Princess&, Wall&){}
 void base_visitor::visit(Wall&, Wall&){}
 void base_visitor::visit(Zombie&, Wall&){}
 void base_visitor::visit(Dragon&, Wall&){}
 void base_visitor::visit(AidKit&, Wall&){}
+void base_visitor::visit(Fireball&, Wall&){}
 void base_visitor::visit(Knight&, Zombie&){}
 void base_visitor::visit(Princess&, Zombie&){}
 void base_visitor::visit(Wall&, Zombie&){}
 void base_visitor::visit(Zombie&, Zombie&){}
 void base_visitor::visit(Dragon&, Zombie&){}
 void base_visitor::visit(AidKit&, Zombie&){}
+void base_visitor::visit(Fireball&, Zombie&){}
 void base_visitor::visit(Knight&, Dragon&){}
 void base_visitor::visit(Princess&, Dragon&){}
 void base_visitor::visit(Wall&, Dragon&){}
 void base_visitor::visit(Zombie&, Dragon&){}
 void base_visitor::visit(Dragon&, Dragon&){}
 void base_visitor::visit(AidKit&, Dragon&){}
+void base_visitor::visit(Fireball&, Dragon&){}
 void base_visitor::visit(Knight&, AidKit&){}
 void base_visitor::visit(Princess&, AidKit&){}
 void base_visitor::visit(Wall&, AidKit&){}
 void base_visitor::visit(Zombie&, AidKit&){}
 void base_visitor::visit(Dragon&, AidKit&){}
 void base_visitor::visit(AidKit&, AidKit&){}
+void base_visitor::visit(Fireball&, AidKit&){}
+void base_visitor::visit(Knight&, Fireball&){}
+void base_visitor::visit(Princess&, Fireball&){}
+void base_visitor::visit(Wall&, Fireball&){}
+void base_visitor::visit(Zombie&, Fireball&){}
+void base_visitor::visit(Dragon&, Fireball&){}
+void base_visitor::visit(AidKit&, Fireball&){}
+void base_visitor::visit(Fireball&, Fireball&){}
 }
 }
