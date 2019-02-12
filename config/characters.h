@@ -4,7 +4,6 @@
 #include "../characters/types.h"
 
 struct CharacterConfig {
-  bool solid;
   sym_t sym;
   hp_t max_hp;
   hp_t damage;
@@ -12,8 +11,7 @@ struct CharacterConfig {
 VISITABLE_STRUCT(CharacterConfig,
     sym,
     max_hp,
-    damage,
-    solid);
+    damage);
 
 class CharactersConfig {
  public:

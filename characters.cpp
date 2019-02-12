@@ -42,12 +42,6 @@ void Character::sym(sym_t symbol) {
 map_point Character::pos() const {
   return pos_;
 }
-bool Character::solid() const {
-  return solid_;
-}
-void Character::solid(bool value) {
-  solid_ = value;
-}
 bool Character::is_dead() const {
   return hp_ <= 0;
 }
@@ -65,7 +59,6 @@ void init_from_config(Character &c, const std::string &char_name) {
   c.hp(character_conf.max_hp);
   c.max_hp(character_conf.max_hp);
   c.damage(character_conf.damage);
-  c.solid(character_conf.solid);
 }
 
 void Monster::tick(map_point hero_pos) {

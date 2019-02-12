@@ -151,8 +151,6 @@ class Character {
   sym_t sym() const;
   void sym(sym_t symbol);
   map_point pos() const;
-  bool solid() const;
-  void solid(bool value);
   virtual bool is_dead() const;
   virtual bool is_projectile() const {
     return false;
