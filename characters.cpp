@@ -88,7 +88,6 @@ Knight::Knight(map_size_t x, map_size_t y) {
 }
 Knight::Knight(map_point pos) : Knight(pos.x, pos.y) {}
 
-
 Princess::Princess(map_size_t x, map_size_t y) {
   pos_ = {x, y};
   init_from_config(*this, "Princess");
@@ -113,6 +112,19 @@ Wall::Wall(map_size_t x, map_size_t y) {
 }
 Wall::Wall(map_point pos) : Wall(pos.x, pos.y) {}
 
+bool PickupItem::is_dead() const {
+  return picked_up_;
+}
+void PickupItem::pick_up() {
+  picked_up_ = true;
+}
+
+AidKit::AidKit(map_size_t x, map_size_t y) {
+  pos_ = {x, y};
+  init_from_config(*this, "AidKit");
+}
+AidKit::AidKit(map_point pos) : AidKit(pos.x, pos.y) {}
+
 namespace visitors {
 void wall_visitor::visit(Character &a, Character &b) {
   if (collided_) return;
@@ -134,6 +146,10 @@ void wall_visitor::visit(Zombie &a, Character &b) {
   b.accept(*this, a);
 }
 void wall_visitor::visit(Dragon &a, Character &b) {
+  if (collided_) return;
+  b.accept(*this, a);
+}
+void wall_visitor::visit(AidKit &a, Character &b) {
   if (collided_) return;
   b.accept(*this, a);
 }
@@ -202,6 +218,37 @@ void attack_visitor::visit(Knight &a, Character &b) {
   done_ = true;
   b.accept(*this, a);
 }
+void attack_visitor::visit(AidKit &a, Character &b) {
+  b.hurt(a.damage());
+  a.pick_up();
+  done_ = true;
+  b.accept(*this, a);
+}
+void attack_visitor::visit(Knight &a, AidKit &b) {
+  if (done_) return;
+  a.hurt(b.damage());
+  b.pick_up();
+  done_ = true;
+}
+void attack_visitor::visit(Princess &a, AidKit &b) {
+  if (done_) return;
+  a.hurt(b.damage());
+  b.pick_up();
+  done_ = true;
+}
+void attack_visitor::visit(Zombie &a, AidKit &b) {
+  if (done_) return;
+  a.hurt(b.damage());
+  b.pick_up();
+  done_ = true;
+}
+void attack_visitor::visit(Dragon &a, AidKit &b) {
+  if (done_) return;
+  a.hurt(b.damage());
+  b.pick_up();
+  done_ = true;
+}
+
 
 void win_cond_visitor::visit(Character &a, Character &b) {
   if (won_) return;
@@ -217,15 +264,19 @@ void win_cond_visitor::visit(Princess &a, Character &b) {
 }
 void win_cond_visitor::visit(Wall &a, Character &b) {
   if (won_) return;
-  a.accept(*this, b);
+  b.accept(*this, a);
 }
 void win_cond_visitor::visit(Zombie &a, Character &b) {
   if (won_) return;
-  a.accept(*this, b);
+  b.accept(*this, a);
 }
 void win_cond_visitor::visit(Dragon &a, Character &b) {
   if (won_) return;
-  a.accept(*this, b);
+  b.accept(*this, a);
+}
+void win_cond_visitor::visit(AidKit &a, Character &b) {
+  if (won_) return;
+  b.accept(*this, a);
 }
 void win_cond_visitor::visit(Knight &a, Princess &b) {
   if (!a.is_dead()) won_ = true;
@@ -239,25 +290,36 @@ void base_visitor::visit(Princess&, Knight&){}
 void base_visitor::visit(Wall&, Knight&){}
 void base_visitor::visit(Zombie&, Knight&){}
 void base_visitor::visit(Dragon&, Knight&){}
+void base_visitor::visit(AidKit&, Knight&){}
 void base_visitor::visit(Knight&, Princess&){}
 void base_visitor::visit(Princess&, Princess&){}
 void base_visitor::visit(Wall&, Princess&){}
 void base_visitor::visit(Zombie&, Princess&){}
 void base_visitor::visit(Dragon&, Princess&){}
+void base_visitor::visit(AidKit&, Princess&){}
 void base_visitor::visit(Knight&, Wall&){}
 void base_visitor::visit(Princess&, Wall&){}
 void base_visitor::visit(Wall&, Wall&){}
 void base_visitor::visit(Zombie&, Wall&){}
 void base_visitor::visit(Dragon&, Wall&){}
+void base_visitor::visit(AidKit&, Wall&){}
 void base_visitor::visit(Knight&, Zombie&){}
 void base_visitor::visit(Princess&, Zombie&){}
 void base_visitor::visit(Wall&, Zombie&){}
 void base_visitor::visit(Zombie&, Zombie&){}
 void base_visitor::visit(Dragon&, Zombie&){}
+void base_visitor::visit(AidKit&, Zombie&){}
 void base_visitor::visit(Knight&, Dragon&){}
 void base_visitor::visit(Princess&, Dragon&){}
 void base_visitor::visit(Wall&, Dragon&){}
 void base_visitor::visit(Zombie&, Dragon&){}
 void base_visitor::visit(Dragon&, Dragon&){}
+void base_visitor::visit(AidKit&, Dragon&){}
+void base_visitor::visit(Knight&, AidKit&){}
+void base_visitor::visit(Princess&, AidKit&){}
+void base_visitor::visit(Wall&, AidKit&){}
+void base_visitor::visit(Zombie&, AidKit&){}
+void base_visitor::visit(Dragon&, AidKit&){}
+void base_visitor::visit(AidKit&, AidKit&){}
 }
 }

@@ -9,21 +9,17 @@ bool is_dead() const override { \
 }\
 void hurt(hp_t) override {}
 
-#define __char_nonmoving \
-bool can_move() const override { \
-  return false; \
-}
-
 
 namespace characters {
 class Character;
+class Monster;
+class PickupItem;
 class Knight;
 class Princess;
 class Wall;
-class Monster;
 class Zombie;
 class Dragon;
-// TODO class AidKit;
+class AidKit;
 
 namespace visitors {
 class base_visitor {
@@ -33,30 +29,42 @@ class base_visitor {
   virtual void visit(Wall&, Knight&);
   virtual void visit(Zombie&, Knight&);
   virtual void visit(Dragon&, Knight&);
+  virtual void visit(AidKit&, Knight&);
 
   virtual void visit(Knight&, Princess&);
   virtual void visit(Princess&, Princess&);
   virtual void visit(Wall&, Princess&);
   virtual void visit(Zombie&, Princess&);
   virtual void visit(Dragon&, Princess&);
+  virtual void visit(AidKit&, Princess&);
 
   virtual void visit(Knight&, Wall&);
   virtual void visit(Princess&, Wall&);
   virtual void visit(Wall&, Wall&);
   virtual void visit(Zombie&, Wall&);
   virtual void visit(Dragon&, Wall&);
+  virtual void visit(AidKit&, Wall&);
 
   virtual void visit(Knight&, Zombie&);
   virtual void visit(Princess&, Zombie&);
   virtual void visit(Wall&, Zombie&);
   virtual void visit(Zombie&, Zombie&);
   virtual void visit(Dragon&, Zombie&);
+  virtual void visit(AidKit&, Zombie&);
 
   virtual void visit(Knight&, Dragon&);
   virtual void visit(Princess&, Dragon&);
   virtual void visit(Wall&, Dragon&);
   virtual void visit(Zombie&, Dragon&);
   virtual void visit(Dragon&, Dragon&);
+  virtual void visit(AidKit&, Dragon&);
+
+  virtual void visit(Knight&, AidKit&);
+  virtual void visit(Princess&, AidKit&);
+  virtual void visit(Wall&, AidKit&);
+  virtual void visit(Zombie&, AidKit&);
+  virtual void visit(Dragon&, AidKit&);
+  virtual void visit(AidKit&, AidKit&);
 
   virtual void visit(Character&, Character&) = 0;
   virtual void visit(Knight&, Character&) = 0;
@@ -64,6 +72,7 @@ class base_visitor {
   virtual void visit(Wall&, Character&) = 0;
   virtual void visit(Zombie&, Character&) = 0;
   virtual void visit(Dragon&, Character&) = 0;
+  virtual void visit(AidKit&, Character&) = 0;
   
 };
 class wall_visitor : public base_visitor {
@@ -75,6 +84,7 @@ class wall_visitor : public base_visitor {
   void visit(Wall&, Character&) override;
   void visit(Zombie&, Character&) override;
   void visit(Dragon&, Character&) override;
+  void visit(AidKit&, Character&) override;
   void visit(Knight &a, Wall &b) override;
   void visit(Princess &a, Wall &b) override;
   void visit(Zombie &a, Wall &b) override;
@@ -95,6 +105,12 @@ class attack_visitor : public base_visitor {
   void visit(Wall&, Character&) override;
   void visit(Zombie&, Character&) override;
   void visit(Dragon&, Character&) override;
+  void visit(AidKit&, Character&) override;
+
+  void visit(Knight &a, AidKit &b) override;
+  void visit(Princess &a, AidKit &b) override;
+  void visit(Zombie &a, AidKit &b) override;
+  void visit(Dragon &a, AidKit &b) override;
  private:
   bool done_ = false;
 };
@@ -108,10 +124,11 @@ class win_cond_visitor : public base_visitor {
   void visit(Wall&, Character&) override;
   void visit(Zombie&, Character&) override;
   void visit(Dragon&, Character&) override;
+  void visit(AidKit&, Character&) override;
 
-  virtual void visit(Princess &a, Character &b) override;
-  virtual void visit(Knight &a, Princess &b) override;
-  virtual void visit(Princess &a, Knight &b) override;
+  void visit(Princess &a, Character &b) override;
+  void visit(Knight &a, Princess &b) override;
+  void visit(Princess &a, Knight &b) override;
  private:
   bool won_ = false;
 };
@@ -131,9 +148,6 @@ class Character {
   bool solid() const;
   void solid(bool value);
   virtual bool is_dead() const;
-  virtual bool can_move() const {
-    return true;
-  };
 
   virtual void accept(visitors::base_visitor &v, Character &with) = 0;
   virtual void accept(visitors::base_visitor &v, Knight &with) = 0;
@@ -141,6 +155,7 @@ class Character {
   virtual void accept(visitors::base_visitor &v, Wall &with) = 0;
   virtual void accept(visitors::base_visitor &v, Zombie &with) = 0;
   virtual void accept(visitors::base_visitor &v, Dragon &with) = 0;
+  virtual void accept(visitors::base_visitor &v, AidKit &with) = 0;
 
   virtual void tick(map_point hero_pos) = 0;
   virtual void move(speed_t dx, speed_t dy);
@@ -178,6 +193,9 @@ class Knight : public Character {
   void accept(visitors::base_visitor &v, Dragon &with) override {
     v.visit(*this, with);
   }
+  void accept(visitors::base_visitor &v, AidKit &with) override {
+    v.visit(*this, with);
+  }
 };
 
 class Princess : public Character {
@@ -185,7 +203,6 @@ class Princess : public Character {
   Princess(map_size_t x, map_size_t y);
   explicit Princess(map_point pos);
   __char_invincible;
-  __char_nonmoving;
   void tick(map_point) override {};
   void accept(visitors::base_visitor &v, Character &with) override {
     v.visit(*this, with);
@@ -203,6 +220,9 @@ class Princess : public Character {
     v.visit(*this, with);
   }
   void accept(visitors::base_visitor &v, Dragon &with) override {
+    v.visit(*this, with);
+  }
+  void accept(visitors::base_visitor &v, AidKit &with) override {
     v.visit(*this, with);
   }
 };
@@ -212,7 +232,6 @@ class Wall : public Character {
   Wall(map_size_t x, map_size_t y);
   explicit Wall(map_point pos);
   __char_invincible;
-  __char_nonmoving;
   void tick(map_point) override {};
   void accept(visitors::base_visitor &v, Character &with) override {
     v.visit(*this, with);
@@ -230,6 +249,9 @@ class Wall : public Character {
     v.visit(*this, with);
   }
   void accept(visitors::base_visitor &v, Dragon &with) override {
+    v.visit(*this, with);
+  }
+  void accept(visitors::base_visitor &v, AidKit &with) override {
     v.visit(*this, with);
   }
 };
@@ -261,6 +283,9 @@ class Zombie : public Monster {
   void accept(visitors::base_visitor &v, Dragon &with) override {
     v.visit(*this, with);
   }
+  void accept(visitors::base_visitor &v, AidKit &with) override {
+    v.visit(*this, with);
+  }
 };
 
 class Dragon : public Monster {
@@ -285,6 +310,45 @@ class Dragon : public Monster {
   void accept(visitors::base_visitor &v, Dragon &with) override {
     v.visit(*this, with);
   }
+  void accept(visitors::base_visitor &v, AidKit &with) override {
+    v.visit(*this, with);
+  }
 };
 
+class PickupItem : public Character {
+ public:
+  bool is_dead() const override;
+  void hurt(hp_t) override {}
+  virtual void pick_up();
+ protected:
+  bool picked_up_ = false;
+};
+
+class AidKit : public PickupItem {
+ public:
+  AidKit(map_size_t x, map_size_t y);
+  explicit AidKit(map_point pos);
+  void tick(map_point) override {};
+  void accept(visitors::base_visitor &v, Character &with) override {
+    v.visit(*this, with);
+  }
+  void accept(visitors::base_visitor &v, Knight &with) override {
+    v.visit(*this, with);
+  }
+  void accept(visitors::base_visitor &v, Princess &with) override {
+    v.visit(*this, with);
+  }
+  void accept(visitors::base_visitor &v, Wall &with) override {
+    v.visit(*this, with);
+  }
+  void accept(visitors::base_visitor &v, Zombie &with) override {
+    v.visit(*this, with);
+  }
+  void accept(visitors::base_visitor &v, Dragon &with) override {
+    v.visit(*this, with);
+  }
+  void accept(visitors::base_visitor &v, AidKit &with) override {
+    v.visit(*this, with);
+  }
+};
 }
