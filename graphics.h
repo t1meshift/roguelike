@@ -1,4 +1,4 @@
-#include "graphics/basic_console.h"
+#include "graphics/ncurses/ncurses.h"
 #include "game.h"
 
 namespace graphics {
@@ -7,6 +7,7 @@ namespace graphics {
   int width();
   int height();
   void draw_state(game &state);
+  void clear();
   void render_frame();
 
   void input(int &key_code);

@@ -19,13 +19,13 @@ find_package(Catch2 REQUIRED)
 cmrc_add_resource_library(roguelike-res ALIAS rcfs::rc NAMESPACE rcfs
         default_config.json)
 
+add_subdirectory(graphics)
+
 add_executable(roguelike
         main.cpp
 
-        graphics.cpp
         graphics.h
-        graphics/basic_console.h
-        graphics/internal/graphics_include_protector.h
+        graphics.cpp
         map.h map.cpp
         characters.cpp characters.h
         map/types.h
@@ -34,10 +34,10 @@ add_executable(roguelike
         config.h config.cpp
         config/characters.h config/characters.cpp
         game.cpp game.h
-        graphics/basic_console.cpp graphics/ncurses.cpp
         map/types.cpp
         scenes/game.cpp scenes/game.h
-        scenes/base_scene.cpp scenes/base_scene.h)
+        scenes/base_scene.cpp scenes/base_scene.h
+        graphics/kbd_keys.h)
 
 add_executable(tests
         tests/test_main.cpp
@@ -46,8 +46,6 @@ add_executable(tests
 
         graphics.cpp
         graphics.h
-        graphics/basic_console.h
-        graphics/internal/graphics_include_protector.h
         map.h map.cpp
         characters.cpp characters.h
         map/types.h
@@ -56,11 +54,11 @@ add_executable(tests
         config.h config.cpp
         config/characters.h config/characters.cpp
         game.cpp game.h
-        graphics/basic_console.cpp graphics/ncurses.cpp
         map/types.cpp
         scenes/game.cpp scenes/game.h
         scenes/base_scene.cpp scenes/base_scene.h)
 
+target_link_libraries(roguelike PUBLIC graphics_ncurses)
 target_link_libraries(roguelike PRIVATE rcfs::rc)
 target_link_libraries(roguelike PUBLIC stdc++fs)
 target_link_libraries(tests Catch2::Catch2)

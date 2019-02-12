@@ -1,9 +1,10 @@
 #define NO_REAL_TIME
-#include "internal/graphics_include_protector.h"
+#include "../graphics_include_protector.h"
 #include <string>
 #include <vector>
 #include <iostream>
-#include "../characters/types.h"
+#include "../../characters/types.h"
+#include "../kbd_keys.h"
 
 namespace graphics {
 namespace engine {

@@ -4,44 +4,36 @@
 #include "game.h"
 #include <fmt/format.h>
 #include "../graphics.h"
+#include "../graphics/kbd_keys.h"
 
 namespace scenes {
 game::game(map_size_t width, map_size_t height) {
-  map_ = map(width, height);
+  map_ = map(width, height, map_generators::box);
   hero_prev_pos_ = map_.hero()->pos();
   offset_x_ = map_.hero()->pos().x - graphics::width() / 2;
   offset_y_ = map_.hero()->pos().y - graphics::height() / 2;
+  key_pressed_ = false;
   calc_offsets();
 }
 
 void game::input(int command) {
-  // TODO arrow control, kbd consts
   auto &hero = map_.hero();
-  switch (command) {
-    case 87:
-    case 119: // W
-      hero->move(0, -1);
-      break;
-    case 65:
-    case 97: // A
-      hero->move(-1, 0);
-      break;
-    case 83:
-    case 115: // S
-      hero->move(0, 1);
-      break;
-    case 68:
-    case 100: // D
-      hero->move(1, 0);
-      break;
-    default:
-      break;
+  if (command == Key::ARROW_UP) {
+    hero->move(0, -1);
+  } else if (command == Key::ARROW_DOWN) {
+    hero->move(0, 1);
+  } else if (command == Key::ARROW_LEFT) {
+    hero->move(-1, 0);
+  } else if (command == Key::ARROW_RIGHT) {
+    hero->move(1, 0);
   }
+
   auto hpos = hero->pos();
   if (hpos.x < 0 || hpos.x >= map_.width() ||
     hpos.y < 0 || hpos.y >= map_.height()) {
     hero->place(hero_prev_pos_.x, hero_prev_pos_.y);
   }
+  key_pressed_ = true;
 }
 void game::tick() {
   bool level_won = false;
@@ -50,57 +42,79 @@ void game::tick() {
 
   namespace char_vis = characters::visitors;
 
-  // Hero collisions
-  for (auto &i : chars) {
-    if (hero->pos() == i->pos()) {
-      char_vis::wall_visitor wall;
-      hero->accept(wall, *i);
-      if (wall.collided()) {
-        hero->place(hero_prev_pos_.x, hero_prev_pos_.y);
-      }
-      char_vis::attack_visitor attack;
-      char_vis::win_cond_visitor win_cond;
-      hero->accept(attack, *i);
-      hero->accept(win_cond, *i);
-      if (!level_won) {
-        level_won = win_cond.won();
-      }
-      if (!i->is_dead()) {
-        hero->place(hero_prev_pos_.x, hero_prev_pos_.y);
+  /*
+   * I check if a key was pressed because projectiles
+   * should move every tick and other mobs should move
+   * on each key press.
+   */
+
+  if (key_pressed_) {
+    // Hero collisions
+    for (auto &i : chars) {
+      if (hero->pos() == i->pos()) {
+        char_vis::wall_visitor wall;
+        hero->accept(wall, *i);
+        if (wall.collided()) {
+          hero->place(hero_prev_pos_.x, hero_prev_pos_.y);
+        }
+        char_vis::attack_visitor attack;
+        char_vis::win_cond_visitor win_cond;
+        hero->accept(attack, *i);
+        hero->accept(win_cond, *i);
+        if (!level_won) {
+          level_won = win_cond.won();
+        }
+        if (!i->is_dead()) {
+          hero->place(hero_prev_pos_.x, hero_prev_pos_.y);
+        }
       }
     }
   }
   // Move mobs then collide them
   for (int i = 0; i < chars.size(); ++i) {
-    // TODO field of view of characters for characters
+    /*
+     * TODO: Field of View for mobs
+     * I guess I should build an
+     * std::map<map_point, std::set<std::shared_ptr<characters::Character>>>
+     * of objects on the map.
+     * Then I can pass it by ref to Character::tick method
+     * Pros:
+     * + O(1) access to random cell
+     * + Extended features for mob controllers
+     * Cons:
+     * - Build costs O(N) for each frame, for big maps it's kinda expensive
+     * - Optimizations are hard to implement
+     */
     auto prev_pos = chars[i]->pos();
-    chars[i]->tick(hero->pos());
-    auto cpos = chars[i]->pos();
-    if (cpos.x < 0 || cpos.x >= map_.width() ||
-        cpos.y < 0 || cpos.y >= map_.height()) {
-      chars[i]->place(hero_prev_pos_.x, hero_prev_pos_.y);
-    }
-    if (cpos == prev_pos) continue;
-    // Check collisions after each tick
-    if (chars[i]->pos() == hero->pos()) {
-      char_vis::attack_visitor attack;
-      chars[i]->accept(attack, *hero);
-      if (!hero->is_dead()) {
-        chars[i]->place(prev_pos.x, prev_pos.y);
+    if (key_pressed_ || chars[i]->is_projectile()) {
+      chars[i]->tick(hero->pos());
+      auto cpos = chars[i]->pos();
+      if (cpos.x < 0 || cpos.x >= map_.width() ||
+          cpos.y < 0 || cpos.y >= map_.height()) {
+        chars[i]->place(hero_prev_pos_.x, hero_prev_pos_.y);
       }
-    }
-    for (int j = 0; j < chars.size(); ++j) {
-      if (i == j) continue;
-      if (chars[i]->pos() == chars[j]->pos()) {
-        char_vis::wall_visitor wall;
-        chars[i]->accept(wall, *chars[j]);
-        if (wall.collided()) {
+      if (cpos == prev_pos) continue;
+      // Check collisions after each tick
+      if (chars[i]->pos() == hero->pos()) {
+        char_vis::attack_visitor attack;
+        chars[i]->accept(attack, *hero);
+        if (!hero->is_dead()) {
           chars[i]->place(prev_pos.x, prev_pos.y);
         }
-        char_vis::attack_visitor attack;
-        chars[i]->accept(attack, *chars[j]);
-        if (!chars[j]->is_dead()) {
-          chars[i]->place(prev_pos.x, prev_pos.y);
+      }
+      for (int j = 0; j < chars.size(); ++j) {
+        if (i == j) continue;
+        if (chars[i]->pos() == chars[j]->pos()) {
+          char_vis::wall_visitor wall;
+          chars[i]->accept(wall, *chars[j]);
+          if (wall.collided()) {
+            chars[i]->place(prev_pos.x, prev_pos.y);
+          }
+          char_vis::attack_visitor attack;
+          chars[i]->accept(attack, *chars[j]);
+          if (!chars[j]->is_dead()) {
+            chars[i]->place(prev_pos.x, prev_pos.y);
+          }
         }
       }
     }
@@ -130,6 +144,7 @@ void game::tick() {
 
   hero_prev_pos_ = hero->pos();
   calc_offsets();
+  key_pressed_ = false;
 }
 void game::render() {
   using namespace graphics;
@@ -146,7 +161,7 @@ void game::render() {
 
   for (map_size_t y = 0; y < graphics::height() - 1; ++y) {
     for (map_size_t x = 0; x < graphics::width(); ++x) {
-      engine::draw_sym('.', x , y);
+      engine::draw_sym('.', x, y);
     }
   }
   for (auto &c : chars) {

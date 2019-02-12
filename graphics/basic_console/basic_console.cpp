@@ -4,6 +4,12 @@
 #warning "Please note that basic_console does not support real-time gameplay."
 #warning "Also you have to use WASD control and press Return after each key press."
 
+KEY_(NOTHING, -1);
+KEY_(ARROW_UP, 119);
+KEY_(ARROW_DOWN, 115);
+KEY_(ARROW_LEFT, 97);
+KEY_(ARROW_RIGHT, 100);
+
 namespace graphics {
 namespace engine {
 std::vector<std::string> buff;

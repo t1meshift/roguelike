@@ -12,6 +12,7 @@ class game : public base_scene {
   map map_;
   map_point hero_prev_pos_;
   map_size_t offset_x_, offset_y_;
+  bool key_pressed_;
 
   void calc_offsets();
 };

@@ -14,8 +14,11 @@ int width() {
 int height() {
   return engine::height();
 }
-void render_frame() {
+
+void clear() {
   engine::flush_screen();
+}
+void render_frame() {
   engine::render_frame();
 }
 

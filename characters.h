@@ -20,6 +20,8 @@ class Wall;
 class Zombie;
 class Dragon;
 class AidKit;
+class Projectile;
+class Fireball;
 
 namespace visitors {
 class base_visitor {
@@ -152,6 +154,9 @@ class Character {
   bool solid() const;
   void solid(bool value);
   virtual bool is_dead() const;
+  virtual bool is_projectile() const {
+    return false;
+  }
 
   virtual void accept(visitors::base_visitor &v, Character &with) = 0;
   virtual void accept(visitors::base_visitor &v, Knight &with) = 0;
@@ -170,7 +175,6 @@ class Character {
   hp_t max_hp_;
   hp_t damage_;
   sym_t sym_;
-  bool solid_;
   map_point pos_;
 };
 
@@ -354,5 +358,16 @@ class AidKit : public PickupItem {
   void accept(visitors::base_visitor &v, AidKit &with) override {
     v.visit(*this, with);
   }
+};
+
+class Projectile : public Character {
+ public:
+  bool is_projectile() const override {
+    return true;
+  }
+};
+
+class Fireball : public Projectile {
+  
 };
 }
