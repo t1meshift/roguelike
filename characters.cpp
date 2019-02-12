@@ -190,31 +190,31 @@ void attack_visitor::visit(Character &a, Character &b) {
 }
 void attack_visitor::visit(Wall &a, Character &b) {
   if (done_) return;
-  a.hurt(b.damage());
+  b.hurt(a.damage());
   done_ = true;
   b.accept(*this, a);
 }
 void attack_visitor::visit(Princess &a, Character &b) {
   if (done_) return;
-  a.hurt(b.damage());
+  b.hurt(a.damage());
   done_ = true;
   b.accept(*this, a);
 }
 void attack_visitor::visit(Zombie &a, Character &b) {
   if (done_) return;
-  a.hurt(b.damage());
+  b.hurt(a.damage());
   done_ = true;
   b.accept(*this, a);
 }
 void attack_visitor::visit(Dragon &a, Character &b) {
   if (done_) return;
-  a.hurt(b.damage());
+  b.hurt(a.damage());
   done_ = true;
   b.accept(*this, a);
 }
 void attack_visitor::visit(Knight &a, Character &b) {
   if (done_) return;
-  a.hurt(b.damage());
+  b.hurt(a.damage());
   done_ = true;
   b.accept(*this, a);
 }
