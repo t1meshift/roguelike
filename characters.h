@@ -111,6 +111,10 @@ class attack_visitor : public base_visitor {
   void visit(Princess &a, AidKit &b) override;
   void visit(Zombie &a, AidKit &b) override;
   void visit(Dragon &a, AidKit &b) override;
+  void visit(AidKit &a, Knight &b) override;
+  void visit(AidKit &a, Princess &b) override;
+  void visit(AidKit &a, Zombie &b) override;
+  void visit(AidKit &a, Dragon &b) override;
  private:
   bool done_ = false;
 };

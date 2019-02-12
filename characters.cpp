@@ -248,7 +248,22 @@ void attack_visitor::visit(Dragon &a, AidKit &b) {
   b.pick_up();
   done_ = true;
 }
-
+void attack_visitor::visit(AidKit &a, Knight &b) {
+  if (!done_) b.hurt(a.damage());
+  a.pick_up();
+}
+void attack_visitor::visit(AidKit &a, Princess &b) {
+  if (!done_) b.hurt(a.damage());
+  a.pick_up();
+}
+void attack_visitor::visit(AidKit &a, Zombie &b) {
+  if (!done_) b.hurt(a.damage());
+  a.pick_up();
+}
+void attack_visitor::visit(AidKit &a, Dragon &b) {
+  if (!done_) b.hurt(a.damage());
+  a.pick_up();
+}
 
 void win_cond_visitor::visit(Character &a, Character &b) {
   if (won_) return;

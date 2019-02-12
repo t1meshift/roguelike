@@ -64,7 +64,9 @@ void game::tick() {
       if (!level_won) {
         level_won = win_cond.won();
       }
-      hero->place(hero_prev_pos_.x, hero_prev_pos_.y);
+      if (!i->is_dead()) {
+        hero->place(hero_prev_pos_.x, hero_prev_pos_.y);
+      }
     }
   }
   // Move mobs then collide them
@@ -90,7 +92,9 @@ void game::tick() {
         }
         char_vis::attack_visitor attack;
         chars[i]->accept(attack, *chars[j]);
-        chars[i]->place(prev_pos.x, prev_pos.y);
+        if (!chars[j]->is_dead()) {
+          chars[i]->place(prev_pos.x, prev_pos.y);
+        }
       }
     }
   }
@@ -148,7 +152,7 @@ void game::render() {
   }
 
   auto h_pos = h->pos();
-  engine::draw_sym(h->sym(), h_pos.x, h_pos.y);
+  engine::draw_sym(h->sym(), h_pos.x - x_start, h_pos.y - y_start);
 
   auto hp_str = fmt::format("HP: {}/{}", h->hp(), h->max_hp());
   engine::write_string(hp_str, 0, engine::height()-1);
