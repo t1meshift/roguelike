@@ -9,6 +9,10 @@ KEY_(ARROW_UP, 119);
 KEY_(ARROW_DOWN, 115);
 KEY_(ARROW_LEFT, 97);
 KEY_(ARROW_RIGHT, 100);
+KEY_(THROW_UP, 'i');
+KEY_(THROW_DOWN, 'k');
+KEY_(THROW_LEFT, 'j');
+KEY_(THROW_RIGHT, 'l');
 
 namespace graphics {
 namespace engine {

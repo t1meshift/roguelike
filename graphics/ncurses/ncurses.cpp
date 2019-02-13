@@ -8,6 +8,10 @@ KEY_(ARROW_UP, KEY_UP);
 KEY_(ARROW_DOWN, KEY_DOWN);
 KEY_(ARROW_LEFT, KEY_LEFT);
 KEY_(ARROW_RIGHT, KEY_RIGHT);
+KEY_(THROW_UP, 'i');
+KEY_(THROW_DOWN, 'k');
+KEY_(THROW_LEFT, 'j');
+KEY_(THROW_RIGHT, 'l');
 
 namespace graphics {
 namespace engine {
@@ -41,6 +45,7 @@ void draw_sym(sym_t symbol, int x, int y) {
   if (y < 0 || y >= h_) return;
   if (x < 0 || x >= w_) return;
   mvaddch(y, x, symbol);
+
 }
 
 void render_frame() {

@@ -26,17 +26,35 @@ void game::input(int command) {
     hero->move(-1, 0);
   } else if (command == Key::ARROW_RIGHT) {
     hero->move(1, 0);
-  }
-  // TODO cast fireball on key press
-  auto hero_projs = hero->projectiles();
-  for (auto &proj : hero_projs) {
-    auto p = proj->pos();
+  } else if (command == Key::THROW_UP) {
+    auto p = hero->pos();
+    auto fireball = std::make_shared<characters::Fireball>(p.x, p.y - 1, 0, -1);
     if (p.x >= 0 && p.x < map_.width() &&
+        p.y - 1 >= 0 && p.y - 1 < map_.height()) {
+      map_.characters().push_back(fireball);
+    }
+  } else if (command == Key::THROW_DOWN) {
+    auto p = hero->pos();
+    auto fireball = std::make_shared<characters::Fireball>(p.x, p.y + 1, 0, 1);
+    if (p.x >= 0 && p.x < map_.width() &&
+        p.y + 1 >= 0 && p.y + 1 < map_.height()) {
+      map_.characters().push_back(fireball);
+    }
+  } else if (command == Key::THROW_LEFT) {
+    auto p = hero->pos();
+    auto fireball = std::make_shared<characters::Fireball>(p.x - 1, p.y, -1, 0);
+    if (p.x - 1 >= 0 && p.x - 1 < map_.width() &&
         p.y >= 0 && p.y < map_.height()) {
-      map_.characters().push_back(proj);
+      map_.characters().push_back(fireball);
+    }
+  } else if (command == Key::THROW_RIGHT) {
+    auto p = hero->pos();
+    auto fireball = std::make_shared<characters::Fireball>(p.x + 1, p.y, 1, 0);
+    if (p.x + 1 >= 0 && p.x + 1 < map_.width() &&
+        p.y >= 0 && p.y < map_.height()) {
+      map_.characters().push_back(fireball);
     }
   }
-  hero_projs.clear();
   auto hpos = hero->pos();
   if (hpos.x < 0 || hpos.x >= map_.width() ||
     hpos.y < 0 || hpos.y >= map_.height()) {
