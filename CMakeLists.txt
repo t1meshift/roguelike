@@ -7,9 +7,9 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
-enable_testing()
 add_compile_options("--coverage")
 link_libraries("--coverage")
+
 include_directories(external)
 
 include(external/cmake_modules/CMakeRC.cmake)
@@ -39,13 +39,14 @@ add_executable(roguelike
         scenes/base_scene.cpp scenes/base_scene.h
         graphics/kbd_keys.h)
 
-add_executable(tests
+add_executable(roguelike-tests
         tests/test_main.cpp
         tests/prng.cpp
+        tests/config.cpp
         tests/characters.cpp
 
-        graphics.cpp
         graphics.h
+        graphics.cpp
         map.h map.cpp
         characters.cpp characters.h
         map/types.h
@@ -56,15 +57,22 @@ add_executable(tests
         game.cpp game.h
         map/types.cpp
         scenes/game.cpp scenes/game.h
-        scenes/base_scene.cpp scenes/base_scene.h)
+        scenes/base_scene.cpp scenes/base_scene.h
+        graphics/kbd_keys.h tests/map.cpp)
+file(COPY tests/test_assets DESTINATION ${PROJECT_BINARY_DIR})
 
-target_link_libraries(roguelike PUBLIC graphics_ncurses)
-target_link_libraries(roguelike PRIVATE rcfs::rc)
-target_link_libraries(roguelike PUBLIC stdc++fs)
-target_link_libraries(tests Catch2::Catch2)
+target_link_libraries(${PROJECT_NAME} PUBLIC graphics_ncurses)
+target_link_libraries(${PROJECT_NAME} PRIVATE rcfs::rc)
+target_link_libraries(${PROJECT_NAME} PUBLIC stdc++fs)
+
+target_link_libraries(${PROJECT_NAME}-tests PUBLIC graphics_ncurses)
+target_link_libraries(${PROJECT_NAME}-tests PRIVATE rcfs::rc)
+target_link_libraries(${PROJECT_NAME}-tests PUBLIC stdc++fs)
+target_link_libraries(${PROJECT_NAME}-tests PUBLIC Catch2::Catch2)
 
 pvs_studio_add_target(TARGET ${PROJECT_NAME}.analyze ALL
         MODE GA:1,2;OP:1,2
         ANALYZE ${PROJECT_NAME}
         OUTPUT FORMAT errorfile
-        LOG target_${PROJECT_NAME}.err)
+        LOG target_${PROJECT_NAME}.err
+        RECURSIVE)

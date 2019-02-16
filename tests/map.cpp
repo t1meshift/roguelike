@@ -1,6 +1,2 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
-#define CATCH_CONFIG_MAIN
-#define CONFIGURU_IMPLEMENTATION 1
-#include <catch2/catch.hpp>
-#include <configuru.hpp>

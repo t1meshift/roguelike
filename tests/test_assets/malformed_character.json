@@ -1,0 +1,11 @@
+{
+	"characters": 
+	{
+		"Knight":
+		{
+			"sym": "K",
+			"max_hp": 1,
+			"damage": 1
+		}
+	}
+}

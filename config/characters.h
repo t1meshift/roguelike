@@ -1,3 +1,4 @@
+#pragma once
 #include <map>
 #include <visit_struct/visit_struct.hpp>
 #include <configuru.hpp>

@@ -19,12 +19,18 @@ hp_t Character::hp() const {
 }
 void Character::hp(hp_t amount) {
   hp_ = amount;
+  if (hp_ > max_hp_) {
+    hp_ = max_hp_;
+  }
 }
 hp_t Character::max_hp() const {
   return max_hp_;
 }
 void Character::max_hp(hp_t amount) {
   max_hp_ = amount;
+  if (hp_ > max_hp_) {
+    hp_ = max_hp_;
+  }
 }
 hp_t Character::damage() const {
   PRNG rnd;
@@ -61,8 +67,8 @@ void init_from_config(Character &c, const std::string &char_name) {
   auto &conf = Config::get();
   auto character_conf = conf.characters().get(char_name); // TODO could be typeid().name(), it's not that slow
   c.sym(character_conf.sym);
-  c.hp(character_conf.max_hp);
   c.max_hp(character_conf.max_hp);
+  c.hp(character_conf.max_hp);
   c.damage(character_conf.damage);
 }
 
@@ -301,43 +307,35 @@ void attack_visitor::visit(Fireball &a, Character &b) {
   b.accept(*this, a);
 }
 void attack_visitor::visit(Knight &a, AidKit &b) {
-  if (done_) return;
-  a.hurt(b.damage());
+  if (!a.is_dead()) a.hurt(b.damage());
   b.pick_up();
-  done_ = true;
 }
 void attack_visitor::visit(Princess &a, AidKit &b) {
-  if (done_) return;
-  a.hurt(b.damage());
+  if (!a.is_dead()) a.hurt(b.damage());
   b.pick_up();
-  done_ = true;
 }
 void attack_visitor::visit(Zombie &a, AidKit &b) {
-  if (done_) return;
-  a.hurt(b.damage());
+  if (!a.is_dead()) a.hurt(b.damage());
   b.pick_up();
-  done_ = true;
 }
 void attack_visitor::visit(Dragon &a, AidKit &b) {
-  if (done_) return;
-  a.hurt(b.damage());
+  if (!a.is_dead()) a.hurt(b.damage());
   b.pick_up();
-  done_ = true;
 }
 void attack_visitor::visit(AidKit &a, Knight &b) {
-  if (!done_) b.hurt(a.damage());
+  if (!a.is_dead()) b.hurt(a.damage());
   a.pick_up();
 }
 void attack_visitor::visit(AidKit &a, Princess &b) {
-  if (!done_) b.hurt(a.damage());
+  if (!a.is_dead()) b.hurt(a.damage());
   a.pick_up();
 }
 void attack_visitor::visit(AidKit &a, Zombie &b) {
-  if (!done_) b.hurt(a.damage());
+  if (!a.is_dead()) b.hurt(a.damage());
   a.pick_up();
 }
 void attack_visitor::visit(AidKit &a, Dragon &b) {
-  if (!done_) b.hurt(a.damage());
+  if (!a.is_dead()) b.hurt(a.damage());
   a.pick_up();
 }
 void attack_visitor::visit(Fireball &a, Knight &b) {

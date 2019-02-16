@@ -4,6 +4,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <configuru.hpp>
 #include <cmrc/cmrc.hpp>
 
 namespace fs = std::filesystem;
@@ -33,6 +34,8 @@ ConfigRoot::ConfigRoot() : ConfigRoot("config.json") {}
 void ConfigRoot::read(const configuru::Config &src) {
   for (auto character : src["characters"].as_object()) {
     CharacterConfig c{};
+    // This line won't cover because configuru wouldn't even call
+    // "const ConversionError& on_error" in any case
     cfg::deserialize(&c, character.value(), [](std::string){});
     characters_.add_character(character.key(), c);
   }
@@ -50,10 +53,11 @@ void ConfigRoot::save() {
 
 ConfigRoot &Config::get() {
   if (conf_ == nullptr) {
-    conf_ = std::make_shared<ConfigRoot>("config.json");
+    conf_ = std::make_shared<ConfigRoot>();
   }
   return *conf_;
 }
 void Config::init() {
-  conf_ = std::make_shared<ConfigRoot>("config.json");
+  conf_.reset();
+  conf_ = std::make_shared<ConfigRoot>();
 }
