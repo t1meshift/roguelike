@@ -17,7 +17,6 @@ TEST_CASE("Write config in non-existing file", "[config]") {
 }
 
 TEST_CASE("Malformed JSON throws exception", "[config]") {
-  // TODO throw specific exception
   REQUIRE_THROWS(ConfigRoot("test_assets/malformed.json"));
 }
 

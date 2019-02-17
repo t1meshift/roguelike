@@ -190,10 +190,6 @@ Fireball::Fireball(map_size_t x, map_size_t y, map_size_t dx, map_size_t dy)
 Fireball::Fireball(map_point pos) : Fireball(pos.x, pos.y) {}
 
 namespace visitors {
-void wall_visitor::visit(Character &a, Character &b) {
-  if (collided_) return;
-  a.accept(*this, b);
-}
 void wall_visitor::visit(Knight &a, Character &b) {
   if (collided_) return;
   b.accept(*this, a);
@@ -260,10 +256,6 @@ bool wall_visitor::collided() const {
   return collided_;
 }
 
-void attack_visitor::visit(Character &a, Character &b) {
-  if (done_) return;
-  a.accept(*this, b);
-}
 void attack_visitor::visit(Wall &a, Character &b) {
   if (done_) return;
   b.hurt(a.damage());
@@ -383,10 +375,6 @@ void attack_visitor::visit(Fireball &a, Fireball &b) {
   b.hp(0);
 }
 
-void win_cond_visitor::visit(Character &a, Character &b) {
-  if (won_) return;
-  a.accept(*this, b);
-}
 void win_cond_visitor::visit(Knight &a, Character &b) {
   if (won_) return;
   b.accept(*this, a);

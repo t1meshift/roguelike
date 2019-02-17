@@ -83,7 +83,6 @@ class base_visitor {
   virtual void visit(AidKit&, Fireball&);
   virtual void visit(Fireball&, Fireball&);
 
-  virtual void visit(Character&, Character&) = 0;
   virtual void visit(Knight&, Character&) = 0;
   virtual void visit(Princess&, Character&) = 0;
   virtual void visit(Wall&, Character&) = 0;
@@ -96,7 +95,6 @@ class base_visitor {
 class wall_visitor : public base_visitor {
  public:
   virtual bool collided() const;
-  void visit(Character &a, Character &b) override;
   void visit(Knight &a, Character &b) override;
   void visit(Princess &a, Character &b) override;
   void visit(Wall&, Character&) override;
@@ -121,7 +119,6 @@ class wall_visitor : public base_visitor {
 };
 class attack_visitor : public base_visitor {
  public:
-  void visit(Character &a, Character &b) override;
   void visit(Knight &a, Character &b) override;
   void visit(Princess &a, Character &b) override;
   void visit(Wall&, Character&) override;
@@ -158,7 +155,6 @@ class win_cond_visitor : public base_visitor {
   bool won() {
     return won_;
   }
-  void visit(Character &a, Character &b) override;
   void visit(Knight &a, Character &b) override;
   void visit(Wall&, Character&) override;
   void visit(Zombie&, Character&) override;
@@ -376,6 +372,7 @@ class Dragon : public Monster {
 
 class PickupItem : public Character {
  public:
+  using Character::damage;
   bool is_dead() const override;
   void hurt(hp_t) override {}
   virtual void pick_up();
@@ -385,6 +382,8 @@ class PickupItem : public Character {
 
 class AidKit : public PickupItem {
  public:
+  // Pathetic. See https://isocpp.org/wiki/faq/strange-inheritance#overload-derived for details.
+  using Character::damage;
   AidKit(map_size_t x, map_size_t y);
   explicit AidKit(map_point pos);
   void tick(map_point) override {};
@@ -417,6 +416,7 @@ class AidKit : public PickupItem {
 
 class Projectile : public Character {
  public:
+  using Character::damage;
   bool is_projectile() const override {
     return true;
   }
@@ -432,6 +432,7 @@ class Fireball : public Projectile {
   Fireball(map_size_t x, map_size_t y);
   Fireball(map_size_t x, map_size_t y, map_size_t dx, map_size_t dy);
   Fireball(map_point pos);
+  using Character::damage;
   void accept(visitors::base_visitor &v, Character &with) override {
     v.visit(*this, with);
   }
