@@ -21,17 +21,17 @@ matrix:
       compiler: gcc
       env: "Build binaries"
       script:
-        - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
-        - cmake --build build
-        - cmake --build build --target roguelike
+        - /usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
+        - /usr/local/bin/cmake --build build
+        - /usr/local/bin/cmake --build build --target roguelike
 
     - os: linux
       compiler: gcc
       env: "Code coverage"
       script:
-        - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug
-        - cmake --build build
-        - cmake --build build --target roguelike-tests
+        - /usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug
+        - /usr/local/bin/cmake --build build
+        - /usr/local/bin/cmake --build build --target roguelike-tests
       after_success:
         - bash <(curl -s https://codecov.io/bash)
 
@@ -40,12 +40,12 @@ install:
   - sudo sh cmake-3.13.4-Linux-x86_64.sh --skip-license --prefix=/usr/local --exclude-subdir
   - git clone https://github.com/catchorg/Catch2.git
   - pushd Catch2
-  - cmake -Bbuild -H. -DBUILD_TESTING=OFF
-  - sudo cmake --build build/ --target install
+  - /usr/local/bin/cmake -Bbuild -H. -DBUILD_TESTING=OFF
+  - sudo /usr/local/bin/cmake --build build/ --target install
   - popd
 
 script:
-  - gcc -v && g++ -v && cmake --version
+  - gcc -v && g++ -v && /usr/local/bin/cmake --version
 
 
 
