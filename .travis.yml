@@ -5,7 +5,7 @@ addons:
   apt:
     update: true
     sources:
-      - sourceline: 'ppa:jonathonf/gcc-8.2'
+      - sourceline: 'ppa:jonathonf/gcc-8.1'
     packages:
       - gcc-8
       - libncurses5-dev
