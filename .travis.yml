@@ -14,22 +14,23 @@ addons:
 env:
   global:
     - MAKEFLAGS="-j 4"
+    - CXX=""
 
 matrix:
   include:
     - os: linux
-      compiler: gcc
+      compiler: gcc-8
       env: "Build binaries"
       script:
-        - /usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DTRAVIS_BUILD
+        - /usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DTRAVIS_BUILD=1
         - /usr/local/bin/cmake --build build
         - /usr/local/bin/cmake --build build --target roguelike
 
     - os: linux
-      compiler: gcc
+      compiler: gcc-8
       env: "Code coverage"
       script:
-        - /usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DTRAVIS_BUILD
+        - /usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DTRAVIS_BUILD=1
         - /usr/local/bin/cmake --build build
         - /usr/local/bin/cmake --build build --target roguelike-tests
       after_success:
