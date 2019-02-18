@@ -4,7 +4,7 @@ sudo: required
 addons:
   apt:
     sources:
-      - ppa:jonathonf/gcc-8.2
+      - sourceline: 'ppa:jonathonf/gcc-8.2'
     packages:
       - gcc-8
       - libncurses5-dev
