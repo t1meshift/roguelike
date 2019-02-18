@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
 project(roguelike)
 
+if (NOT DEFINED GRAPHICS_LIB)
+    set(GRAPHICS_LIB basic_console)
+endif(NOT DEFINED GRAPHICS_LIB)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
@@ -61,11 +65,11 @@ add_executable(roguelike-tests
         graphics/kbd_keys.h tests/map.cpp)
 file(COPY tests/test_assets DESTINATION ${PROJECT_BINARY_DIR})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC graphics_ncurses)
+target_link_libraries(${PROJECT_NAME} PUBLIC graphics_${GRAPHICS_LIB})
 target_link_libraries(${PROJECT_NAME} PRIVATE rcfs::rc)
 target_link_libraries(${PROJECT_NAME} PUBLIC stdc++fs)
 
-target_link_libraries(${PROJECT_NAME}-tests PUBLIC graphics_ncurses)
+target_link_libraries(${PROJECT_NAME}-tests PUBLIC graphics_${GRAPHICS_LIB})
 target_link_libraries(${PROJECT_NAME}-tests PRIVATE rcfs::rc)
 target_link_libraries(${PROJECT_NAME}-tests PUBLIC stdc++fs)
 target_link_libraries(${PROJECT_NAME}-tests PUBLIC Catch2::Catch2)

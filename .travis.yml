@@ -1,0 +1,50 @@
+language: cpp
+sudo: required
+
+addons:
+  apt:
+    sources:
+      - ppa:jonathonf/gcc-8.2
+    packages:
+      - gcc-8
+      - libncurses5-dev
+      - libncursesw5-dev
+
+env:
+  global:
+    - MAKEFLAGS="-j 4"
+
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+      env: "Build binaries"
+      script:
+        - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
+        - cmake --build build
+        - cmake --build build --target roguelike
+
+    - os: linux
+      compiler: gcc
+      env: "Code coverage"
+      script:
+        - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug
+        - cmake --build build
+        - cmake --build build --target roguelike-tests
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+
+install:
+  - wget https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.sh
+  - sudo sh cmake-3.13.4-Linux-x86_64.sh --skip-license --prefix=/usr/local --exclude-subdir
+  - git clone https://github.com/catchorg/Catch2.git
+  - pushd Catch2
+  - cmake -Bbuild -H. -DBUILD_TESTING=OFF
+  - sudo cmake --build build/ --target install
+  - popd
+
+script:
+  - gcc -v && g++ -v && cmake --version
+
+
+
