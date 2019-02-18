@@ -14,7 +14,8 @@ addons:
 env:
   global:
     - MAKEFLAGS="-j 4"
-    - CXX=""
+    - CXX="g++-8"
+    - CC="gcc-8"
 
 matrix:
   include:
@@ -44,9 +45,6 @@ install:
   - /usr/local/bin/cmake -Bbuild -H. -DBUILD_TESTING=OFF
   - sudo /usr/local/bin/cmake --build build/ --target install
   - popd
-
-script:
-  - gcc -v && g++ -v && /usr/local/bin/cmake --version
 
 
 
