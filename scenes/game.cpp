@@ -3,6 +3,7 @@
 #define FMT_HEADER_ONLY
 #include "game.h"
 #include <fmt/format.h>
+#include "../map.h"
 #include "../graphics.h"
 #include "../graphics/kbd_keys.h"
 #include "../visitors/wall_visitor.h"
@@ -10,8 +11,8 @@
 #include "../visitors/win_cond_visitor.h"
 
 namespace scenes {
-game::game(map_size_t width, map_size_t height) {
-  map_ = map(width, height, map_generators::box);
+game::game(map_size_t width, map_size_t height) :
+  map_(map(width, height, map_generators::box)) {
   hero_prev_pos_ = map_.hero()->pos();
   offset_x_ = map_.hero()->pos().x - graphics::width() / 2;
   offset_y_ = map_.hero()->pos().y - graphics::height() / 2;
