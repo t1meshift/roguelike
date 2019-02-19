@@ -5,9 +5,10 @@ addons:
   apt:
     update: true
     sources:
-      - sourceline: 'ppa:jonathonf/gcc'
+      - sourceline: 'ppa:ubuntu-toolchain-r/test'
     packages:
       - gcc-8
+      - g++-8
       - libncurses5-dev
       - libncursesw5-dev
 
@@ -38,7 +39,7 @@ matrix:
         - bash <(curl -s https://codecov.io/bash)
 
 before_install:
-  - export CXX="g++-8"
+  - export CXX="gcc-8"
   - export CC="gcc-8"
 
 install:
