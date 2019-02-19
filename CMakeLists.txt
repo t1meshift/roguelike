@@ -74,6 +74,10 @@ target_link_libraries(${PROJECT_NAME}-tests PRIVATE rcfs::rc)
 target_link_libraries(${PROJECT_NAME}-tests PUBLIC stdc++fs)
 target_link_libraries(${PROJECT_NAME}-tests PUBLIC Catch2::Catch2)
 
+include(CTest)
+include(Catch)
+catch_discover_tests(roguelike-tests)
+
 if(NOT DEFINED TRAVIS_BUILD)
 pvs_studio_add_target(TARGET ${PROJECT_NAME}.analyze ALL
         MODE GA:1,2;OP:1,2

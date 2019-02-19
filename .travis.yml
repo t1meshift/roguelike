@@ -26,7 +26,7 @@ matrix:
       -DTRAVIS_BUILD=1"
     - "/usr/local/bin/cmake --build build"
     - "/usr/local/bin/cmake --build build --target roguelike"
-    - mv build/roguelike build/roguelike-ncurses
+    - mv build/roguelike "build/roguelike-$TRAVIS_TAG-ncurses"
     deploy:
       provider: releases
       skip_cleanup: true
@@ -35,7 +35,7 @@ matrix:
       on:
         tags: true
         repo: t1meshift/roguelike
-        file: build/roguelike-ncurses
+        file: build/roguelike-$TRAVIS_TAG-ncurses
   - os: linux
     compiler: g++-8
     env: Code coverage
@@ -43,6 +43,8 @@ matrix:
     - "/usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DTRAVIS_BUILD=1"
     - "/usr/local/bin/cmake --build build"
     - "/usr/local/bin/cmake --build build --target roguelike-tests"
+    - cd build
+    - ctest --output-on-failure
     after_success:
     - bash <(curl -s https://codecov.io/bash)
 before_install:
