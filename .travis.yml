@@ -26,7 +26,7 @@ matrix:
       -DTRAVIS_BUILD=1"
     - "/usr/local/bin/cmake --build build"
     - "/usr/local/bin/cmake --build build --target roguelike"
-    - cp build/roguelike $TRAVIS_BUILD_DIR/roguelike-$TRAVIS_TAG-ncurses
+    - zip roguelike-$TRAVIS_TAG-ncurses.zip -r -5 build/roguelike
     deploy:
       provider: releases
       skip_cleanup: true
@@ -35,7 +35,7 @@ matrix:
       on:
         tags: true
         repo: t1meshift/roguelike
-        file: $TRAVIS_BUILD_DIR/build/roguelike-$TRAVIS_TAG-ncurses
+        file: roguelike-$TRAVIS_TAG-ncurses.zip
   - os: linux
     compiler: g++-8
     env: Code coverage
