@@ -20,7 +20,6 @@ map_container snake(map_size_t w, map_size_t h);
 
 class map {
  public:
-  map();
   map(map_size_t width, map_size_t height, map_generator gen = map_generators::snake);
 
   map_size_t width() const;
@@ -28,9 +27,6 @@ class map {
 
   std::shared_ptr<characters::Character> &hero();
   chars_container &characters();
-  std::shared_ptr<characters::Character> at(map_size_t x, map_size_t y);
-
-  void resize(map_size_t w, map_size_t h);
 
   void regenerate(map_generator gen);
  private:

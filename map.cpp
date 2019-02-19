@@ -1,11 +1,6 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 #include "map.h"
-map::map() {
-  width_ = 0;
-  height_ = 0;
-}
-
 map::map(map_size_t width, map_size_t height, map_generator gen) {
   width_ = width;
   height_ = height;
@@ -21,33 +16,26 @@ map_size_t map::height() const {
 
 
 void map::regenerate(map_generator gen) {
+  if (width_ <= 0 || height_ <= 0) {
+    throw std::logic_error("Map size can't be 0");
+  }
   map_container container = gen(width_, height_);
   characters_.clear();
   hero_ = container.hero;
   characters_ = container.characters;
 }
-void map::resize(map_size_t w, map_size_t h) {
-  width_ = w;
-  height_ = h;
-}
 
 std::shared_ptr<characters::Character> &map::hero() {
+  if (width_ <= 0 || height_ <= 0) {
+    throw std::logic_error("Map size can't be 0");
+  }
   return hero_;
 }
 chars_container &map::characters() {
-  return characters_;
-}
-std::shared_ptr<characters::Character> map::at(map_size_t x, map_size_t y) {
-  for (auto it = characters_.cbegin(); it != characters_.cend(); ++it) {
-    auto &chr = *it;
-    if (chr == nullptr) {
-      characters_.erase(it);
-      return nullptr;
-    }
-    if (chr->pos().x == x && chr->pos().y == y)
-      return chr;
+  if (width_ <= 0 || height_ <= 0) {
+    throw std::logic_error("Map size can't be 0");
   }
-  return nullptr;
+  return characters_;
 }
 
 namespace map_generators {
