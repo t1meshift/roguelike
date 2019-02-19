@@ -46,7 +46,7 @@ matrix:
     - cd build
     - ctest --output-on-failure
     after_success:
-    - bash <(curl -s https://codecov.io/bash)
+    - curl -s https://codecov.io/bash | bash -s -- -x gcov-8
 before_install:
 - sudo apt-get install -qq --yes --force-yes binutils
 - export CXX="g++-8"
