@@ -28,7 +28,14 @@ matrix:
     - "/usr/local/bin/cmake --build build --target roguelike"
     - mv build/roguelike build/roguelike-ncurses
     deploy:
-      file: build/roguelike-ncurses
+      provider: releases
+      skip_cleanup: true
+      api_key:
+        secure: MxOLYJLu7Iph3whqLeKOvUhRqo2fkuysMpOwedCaVfMSwglVxX+zrVXt60rYO/iarv7D6YxQL5RM0XWe6CvVp7Jmu0/BddpEojyty7J1wx2xXpbLP1rjS+tWhXCia9BbIBNJdUXMwo4cQn/LbwnPFwSBqXl38Cv/NUYacZMhk/X55D72vHf4JkA395ixOqudH7qP0iUUc641terSpKei8uJqd1lMxEdzp5n+i5zHW5RTg+/sE3E6L412V7IJDuffoLV25SBK+Oh2b9KMRlzibvforE+To4CWH+EGTP1GFs6A0LhtcYblAqiL2nlAAwU7c6Zosbg++xac7VQFxb/0WjFG+CJMGIiHe2n3SXoTLi1A5nieQjbNJEVo6S00ILJD3Ml0yrVYlj4SCjx72ddfjXqfFGg1w8DZ3xnZqYiZG2PaF6uB1dbiVJ5tDXqB8OUQ6i5mHSh4O2sqIUFA7qMe4jyqYtra6st5jDHx8yXX7tfKN07ylchlVRI0fn8ql4jWF1H7MNUG4xoxuMbu2ub+lcdKUS7uY6QaBDXSHBkcKquuIQ8fSTxfYrNsDYydvRqBqeNuikUoqOz2ILXUf3B/hsow+89RZV8gRHEwHlsVwm/rQx6Q3mQlYUVFhodGhC9wLliwDqvYhru43ewQO8+TejapSocspnBBrnuoRHEYwzY=
+      on:
+        tags: true
+        repo: t1meshift/roguelike
+        file: build/roguelike-ncurses
   - os: linux
     compiler: g++-8
     env: Code coverage
@@ -50,11 +57,3 @@ install:
 - "/usr/local/bin/cmake -Bbuild -H. -DBUILD_TESTING=OFF"
 - sudo /usr/local/bin/cmake --build build/ --target install
 - popd
-deploy:
-  provider: releases
-  skip_cleanup: true
-  api_key:
-    secure: MxOLYJLu7Iph3whqLeKOvUhRqo2fkuysMpOwedCaVfMSwglVxX+zrVXt60rYO/iarv7D6YxQL5RM0XWe6CvVp7Jmu0/BddpEojyty7J1wx2xXpbLP1rjS+tWhXCia9BbIBNJdUXMwo4cQn/LbwnPFwSBqXl38Cv/NUYacZMhk/X55D72vHf4JkA395ixOqudH7qP0iUUc641terSpKei8uJqd1lMxEdzp5n+i5zHW5RTg+/sE3E6L412V7IJDuffoLV25SBK+Oh2b9KMRlzibvforE+To4CWH+EGTP1GFs6A0LhtcYblAqiL2nlAAwU7c6Zosbg++xac7VQFxb/0WjFG+CJMGIiHe2n3SXoTLi1A5nieQjbNJEVo6S00ILJD3Ml0yrVYlj4SCjx72ddfjXqfFGg1w8DZ3xnZqYiZG2PaF6uB1dbiVJ5tDXqB8OUQ6i5mHSh4O2sqIUFA7qMe4jyqYtra6st5jDHx8yXX7tfKN07ylchlVRI0fn8ql4jWF1H7MNUG4xoxuMbu2ub+lcdKUS7uY6QaBDXSHBkcKquuIQ8fSTxfYrNsDYydvRqBqeNuikUoqOz2ILXUf3B/hsow+89RZV8gRHEwHlsVwm/rQx6Q3mQlYUVFhodGhC9wLliwDqvYhru43ewQO8+TejapSocspnBBrnuoRHEYwzY=
-  on:
-    tags: true
-    repo: t1meshift/roguelike
