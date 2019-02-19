@@ -6,6 +6,7 @@ addons:
     update: true
     sources:
       - sourceline: 'ppa:ubuntu-toolchain-r/test'
+      - sourceline: 'ppa:jonathonf/binutils'
     packages:
       - gcc-8
       - g++-8
@@ -22,9 +23,9 @@ matrix:
   include:
     - os: linux
       compiler: g++-8
-      env: "Build binaries"
+      env: "Build binaries (with ncurses)"
       script:
-        - /usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DTRAVIS_BUILD=1
+        - /usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DGRAPHICS_LIB=ncurses -DTRAVIS_BUILD=1
         - /usr/local/bin/cmake --build build
         - /usr/local/bin/cmake --build build --target roguelike
 
@@ -39,6 +40,7 @@ matrix:
         - bash <(curl -s https://codecov.io/bash)
 
 before_install:
+  - sudo apt-get install -qq --yes --force-yes binutils
   - export CXX="g++-8"
   - export CC="gcc-8"
 
