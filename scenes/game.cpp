@@ -5,6 +5,9 @@
 #include <fmt/format.h>
 #include "../graphics.h"
 #include "../graphics/kbd_keys.h"
+#include "../visitors/wall_visitor.h"
+#include "../visitors/attack_visitor.h"
+#include "../visitors/win_cond_visitor.h"
 
 namespace scenes {
 game::game(map_size_t width, map_size_t height) {

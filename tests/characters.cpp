@@ -3,6 +3,9 @@
 #include <catch2/catch.hpp>
 #include "../utils/PRNG.h"
 #include "../characters.h"
+#include "../visitors/wall_visitor.h"
+#include "../visitors/attack_visitor.h"
+#include "../visitors/win_cond_visitor.h"
 #include "../config.h"
 
 namespace chr = characters;
