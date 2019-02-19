@@ -39,7 +39,7 @@ matrix:
         - bash <(curl -s https://codecov.io/bash)
 
 before_install:
-  - export CXX="gcc-8"
+  - export CXX="g++-8"
   - export CC="gcc-8"
 
 install:
