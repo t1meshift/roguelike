@@ -51,6 +51,7 @@ add_executable(roguelike-tests
         tests/prng.cpp
         tests/config.cpp
         tests/characters.cpp
+        tests/map.cpp
 
         graphics.h
         graphics.cpp
@@ -65,7 +66,7 @@ add_executable(roguelike-tests
         map/types.cpp
         scenes/game.cpp scenes/game.h
         scenes/base_scene.cpp scenes/base_scene.h
-        graphics/kbd_keys.h tests/map.cpp
+        graphics/kbd_keys.h
         visitors/attack_visitor.cpp visitors/attack_visitor.h
         visitors/wall_visitor.cpp visitors/wall_visitor.h
         visitors/win_cond_visitor.cpp visitors/win_cond_visitor.h)

@@ -84,8 +84,6 @@ map_container box(map_size_t w, map_size_t h) {
       case 3:
         result.characters.push_back(std::make_shared<characters::AidKit>(pos_zombie));
         break;
-      default:
-        break;
     }
   }
 
@@ -151,8 +149,6 @@ map_container snake(map_size_t w, map_size_t h) {
         break;
       case 3:
         result.characters.push_back(std::make_shared<characters::AidKit>(pos_zombie));
-        break;
-      default:
         break;
     }
   }
