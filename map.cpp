@@ -14,7 +14,6 @@ map_size_t map::height() const {
   return height_;
 }
 
-
 void map::regenerate(map_generator gen) {
   if (width_ <= 0 || height_ <= 0) {
     throw std::logic_error("Map size can't be 0");
@@ -26,15 +25,9 @@ void map::regenerate(map_generator gen) {
 }
 
 std::shared_ptr<characters::Character> &map::hero() {
-  if (width_ <= 0 || height_ <= 0) {
-    throw std::logic_error("Map size can't be 0");
-  }
   return hero_;
 }
 chars_container &map::characters() {
-  if (width_ <= 0 || height_ <= 0) {
-    throw std::logic_error("Map size can't be 0");
-  }
   return characters_;
 }
 
