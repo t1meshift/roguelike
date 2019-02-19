@@ -161,11 +161,3 @@ map_container snake(map_size_t w, map_size_t h) {
 
 };
 }
-
-bool operator<(const std::shared_ptr<characters::Character> &lhs, const std::shared_ptr<characters::Character> &rhs) {
-  auto pos_l = lhs->pos();
-  auto pos_r = rhs->pos();
-  if (pos_l.x == pos_r.x)
-    return pos_l.y < pos_r.y;
-  return pos_l.x < pos_r.x;
-}
