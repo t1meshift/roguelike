@@ -37,6 +37,10 @@ matrix:
       after_success:
         - bash <(curl -s https://codecov.io/bash)
 
+before_install:
+  - export CXX="g++-8"
+  - export CC="gcc-8"
+
 install:
   - wget https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.sh
   - sudo sh cmake-3.13.4-Linux-x86_64.sh --skip-license --prefix=/usr/local --exclude-subdir
