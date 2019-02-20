@@ -5,30 +5,24 @@
 namespace characters {
 namespace visitors {
 void wall_visitor::visit(Knight &a, Character &b) {
-  if (collided_) return;
   b.accept(*this, a);
 }
 void wall_visitor::visit(Princess &a, Character &b) {
-  if (collided_) return;
   b.accept(*this, a);
 }
 void wall_visitor::visit(Wall &a, Character &b) {
   collided_ = true;
 }
 void wall_visitor::visit(Zombie &a, Character &b) {
-  if (collided_) return;
   b.accept(*this, a);
 }
 void wall_visitor::visit(Dragon &a, Character &b) {
-  if (collided_) return;
   b.accept(*this, a);
 }
 void wall_visitor::visit(AidKit &a, Character &b) {
-  if (collided_) return;
   b.accept(*this, a);
 }
 void wall_visitor::visit(Fireball &a, Character &b) {
-  if (collided_) return;
   b.accept(*this, a);
 }
 void wall_visitor::visit(Knight &a, Wall &b) {

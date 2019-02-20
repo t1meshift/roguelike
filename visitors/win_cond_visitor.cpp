@@ -4,31 +4,24 @@
 namespace characters {
 namespace visitors {
 void win_cond_visitor::visit(Knight &a, Character &b) {
-  if (won_) return;
   b.accept(*this, a);
 }
 void win_cond_visitor::visit(Princess &a, Character &b) {
-  if (won_) return;
   b.accept(*this, a);
 }
 void win_cond_visitor::visit(Wall &a, Character &b) {
-  if (won_) return;
   b.accept(*this, a);
 }
 void win_cond_visitor::visit(Zombie &a, Character &b) {
-  if (won_) return;
   b.accept(*this, a);
 }
 void win_cond_visitor::visit(Dragon &a, Character &b) {
-  if (won_) return;
   b.accept(*this, a);
 }
 void win_cond_visitor::visit(AidKit &a, Character &b) {
-  if (won_) return;
   b.accept(*this, a);
 }
 void win_cond_visitor::visit(Fireball &a, Character &b) {
-  if (won_) return;
   b.accept(*this, a);
 }
 void win_cond_visitor::visit(Knight &a, Princess &b) {
