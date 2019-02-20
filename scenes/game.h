@@ -8,6 +8,10 @@ class game : public base_scene {
   void input(int command) override;
   void tick() override;
   void render() override;
+
+  map &current_map();
+  map_point offset() const;
+  std::vector<std::shared_ptr<characters::Projectile>> &hero_projectiles();
  private:
   map map_;
   map_point hero_prev_pos_;

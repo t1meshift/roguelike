@@ -271,4 +271,14 @@ void game::calc_offsets() {
     offset_y_ = 0;
   }
 }
+
+map &game::current_map() {
+  return map_;
+}
+map_point game::offset() const {
+  return map_point{offset_x_, offset_y_};
+}
+std::vector<std::shared_ptr<characters::Projectile>> &game::hero_projectiles() {
+  return hero_projs_;
+}
 }
