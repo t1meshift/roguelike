@@ -11,8 +11,10 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
-add_compile_options("--coverage")
-link_libraries("--coverage")
+if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+    add_compile_options("--coverage")
+    link_libraries("--coverage")
+endif(CMAKE_BUILD_TYPE MATCHES DEBUG)
 
 include_directories(external)
 
@@ -69,7 +71,7 @@ add_executable(roguelike-tests
         graphics/kbd_keys.h
         visitors/attack_visitor.cpp visitors/attack_visitor.h
         visitors/wall_visitor.cpp visitors/wall_visitor.h
-        visitors/win_cond_visitor.cpp visitors/win_cond_visitor.h)
+        visitors/win_cond_visitor.cpp visitors/win_cond_visitor.h tests/scene_game.cpp)
 file(COPY tests/test_assets DESTINATION ${PROJECT_BINARY_DIR})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC graphics_${GRAPHICS_LIB})
@@ -86,10 +88,10 @@ include(Catch)
 catch_discover_tests(roguelike-tests)
 
 if(NOT DEFINED TRAVIS_BUILD)
-pvs_studio_add_target(TARGET ${PROJECT_NAME}.analyze ALL
-        MODE GA:1,2;OP:1,2
-        ANALYZE ${PROJECT_NAME}
-        OUTPUT FORMAT errorfile
-        LOG target_${PROJECT_NAME}.err
-        RECURSIVE)
+    pvs_studio_add_target(TARGET ${PROJECT_NAME}.analyze ALL
+            MODE GA:1,2;OP:1,2
+            ANALYZE ${PROJECT_NAME}
+            OUTPUT FORMAT errorfile
+            LOG target_${PROJECT_NAME}.err
+            RECURSIVE)
 endif(NOT DEFINED TRAVIS_BUILD)
