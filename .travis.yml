@@ -26,7 +26,8 @@ matrix:
       -DTRAVIS_BUILD=1"
     - "/usr/local/bin/cmake --build build"
     - "/usr/local/bin/cmake --build build --target roguelike"
-    - zip roguelike-$TRAVIS_TAG-ncurses.zip -r -5 ./LICENSE ./build/roguelike
+    - cp ./build/roguelike ./roguelike
+    - zip roguelike-$TRAVIS_TAG-ncurses.zip -r -5 ./LICENSE ./roguelike
     deploy:
       provider: releases
       overwrite: true
