@@ -23,8 +23,7 @@ matrix:
     env: Build binaries (with ncurses)
     if: tag IS present
     script:
-    - "/usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DGRAPHICS_LIB=ncurses
-      -DTRAVIS_BUILD=1"
+    - "/usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DGRAPHICS_LIB=ncurses -DCOV=0"
     - "/usr/local/bin/cmake --build build"
     - "/usr/local/bin/cmake --build build --target roguelike"
     - cp ./build/roguelike ./roguelike
@@ -47,7 +46,7 @@ matrix:
     env: Build binaries (no ncurses)
     if: tag IS present
     script:
-    - "/usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DTRAVIS_BUILD=1"
+    - "/usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DCOV=0"
     - "/usr/local/bin/cmake --build build"
     - "/usr/local/bin/cmake --build build --target roguelike"
     - cp ./build/roguelike ./roguelike
@@ -69,7 +68,7 @@ matrix:
     compiler: g++-8
     env: Code coverage
     script:
-    - "/usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DTRAVIS_BUILD=1"
+    - "/usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug"
     - "/usr/local/bin/cmake --build build"
     - "/usr/local/bin/cmake --build build --target roguelike-tests"
     - cd build

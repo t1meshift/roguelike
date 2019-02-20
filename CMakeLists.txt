@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
 project(roguelike)
 
+option(COV "Generate gcov data (in binaries too)" ON)
+
 if (NOT DEFINED GRAPHICS_LIB)
     set(GRAPHICS_LIB basic_console)
 endif(NOT DEFINED GRAPHICS_LIB)
@@ -11,10 +13,10 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
-if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+if(COV)
     add_compile_options("--coverage")
     link_libraries("--coverage")
-endif(CMAKE_BUILD_TYPE MATCHES DEBUG)
+endif(COV)
 
 include_directories(external)
 
@@ -88,11 +90,11 @@ include(CTest)
 include(Catch)
 catch_discover_tests(roguelike-tests)
 
-if(NOT DEFINED TRAVIS_BUILD)
+if(NOT DEFINED ENV{CI})
     pvs_studio_add_target(TARGET ${PROJECT_NAME}.analyze ALL
             MODE GA:1,2;OP:1,2
             ANALYZE ${PROJECT_NAME}
             OUTPUT FORMAT errorfile
             LOG target_${PROJECT_NAME}.err
             RECURSIVE)
-endif(NOT DEFINED TRAVIS_BUILD)
+endif(NOT DEFINED ENV{CI})
