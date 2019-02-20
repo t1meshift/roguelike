@@ -52,9 +52,6 @@ void render_frame() {
 
 int get_input() {
   int c = std::cin.get();
-#ifdef DEBUG
-  std::cerr << c << std::endl;
-#endif
   return c;
 }
 void write_string(const std::string &str, int x, int y) {
