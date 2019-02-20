@@ -103,6 +103,7 @@ void game::tick() {
   }
   // Spawn hero's projectiles there to prevent collisions with hero itself
   // It's cheaper than writing flags on each projectile
+  // FIXME: no, it's not. Dragons shoot through walls on snake levels.
   for (auto &proj : hero_projs_) {
     map_.characters().push_back(proj);
   }

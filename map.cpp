@@ -118,10 +118,10 @@ map_container snake(map_size_t w, map_size_t h) {
   PRNG rand;
   map_point pos_hero{1, 1}, pos_princess{};
 
-  pos_princess.x = w-1;
-  pos_princess.y = 1;
+  pos_princess.x = w-2;
+  pos_princess.y = 2;
   if (w % 4 == 0) {
-    pos_princess.y = h-1;
+    pos_princess.y = h-2;
   }
 
   result.hero = std::make_shared<characters::Knight>(pos_hero);
