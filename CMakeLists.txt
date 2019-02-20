@@ -54,6 +54,7 @@ add_executable(roguelike-tests
         tests/config.cpp
         tests/characters.cpp
         tests/map.cpp
+        tests/scene_game.cpp
 
         graphics.h
         graphics.cpp
@@ -71,7 +72,7 @@ add_executable(roguelike-tests
         graphics/kbd_keys.h
         visitors/attack_visitor.cpp visitors/attack_visitor.h
         visitors/wall_visitor.cpp visitors/wall_visitor.h
-        visitors/win_cond_visitor.cpp visitors/win_cond_visitor.h tests/scene_game.cpp)
+        visitors/win_cond_visitor.cpp visitors/win_cond_visitor.h)
 file(COPY tests/test_assets DESTINATION ${PROJECT_BINARY_DIR})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC graphics_${GRAPHICS_LIB})
