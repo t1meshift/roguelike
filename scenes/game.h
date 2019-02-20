@@ -13,6 +13,7 @@ class game : public base_scene {
   map_point hero_prev_pos_;
   map_size_t offset_x_, offset_y_;
   bool key_pressed_;
+  std::vector<std::shared_ptr<characters::Projectile>> hero_projs_;
 
   void calc_offsets();
 };

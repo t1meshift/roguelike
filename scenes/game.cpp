@@ -32,31 +32,31 @@ void game::input(int command) {
     hero->move(1, 0);
   } else if (command == Key::THROW_UP) {
     auto p = hero->pos();
-    auto fireball = std::make_shared<characters::Fireball>(p.x, p.y - 1, 0, -1);
+    auto fireball = std::make_shared<characters::Fireball>(p.x, p.y, 0, -1);
     if (p.x >= 0 && p.x < map_.width() &&
         p.y - 1 >= 0 && p.y - 1 < map_.height()) {
-      map_.characters().push_back(fireball);
+      hero_projs_.push_back(fireball);
     }
   } else if (command == Key::THROW_DOWN) {
     auto p = hero->pos();
-    auto fireball = std::make_shared<characters::Fireball>(p.x, p.y + 1, 0, 1);
+    auto fireball = std::make_shared<characters::Fireball>(p.x, p.y, 0, 1);
     if (p.x >= 0 && p.x < map_.width() &&
         p.y + 1 >= 0 && p.y + 1 < map_.height()) {
-      map_.characters().push_back(fireball);
+      hero_projs_.push_back(fireball);
     }
   } else if (command == Key::THROW_LEFT) {
     auto p = hero->pos();
-    auto fireball = std::make_shared<characters::Fireball>(p.x - 1, p.y, -1, 0);
+    auto fireball = std::make_shared<characters::Fireball>(p.x, p.y, -1, 0);
     if (p.x - 1 >= 0 && p.x - 1 < map_.width() &&
         p.y >= 0 && p.y < map_.height()) {
-      map_.characters().push_back(fireball);
+      hero_projs_.push_back(fireball);
     }
   } else if (command == Key::THROW_RIGHT) {
     auto p = hero->pos();
-    auto fireball = std::make_shared<characters::Fireball>(p.x + 1, p.y, 1, 0);
+    auto fireball = std::make_shared<characters::Fireball>(p.x, p.y, 1, 0);
     if (p.x + 1 >= 0 && p.x + 1 < map_.width() &&
         p.y >= 0 && p.y < map_.height()) {
-      map_.characters().push_back(fireball);
+      hero_projs_.push_back(fireball);
     }
   }
   auto hpos = hero->pos();
@@ -101,6 +101,13 @@ void game::tick() {
       }
     }
   }
+  // Spawn hero's projectiles there to prevent collisions with hero itself
+  // It's cheaper than writing flags on each projectile
+  for (auto &proj : hero_projs_) {
+    map_.characters().push_back(proj);
+  }
+  hero_projs_.clear();
+
   // Move mobs then collide them
   for (int i = 0; i < chars.size(); ++i) {
     /*
