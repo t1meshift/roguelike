@@ -141,7 +141,7 @@ void game::tick() {
       auto cpos = chars[i]->pos();
       if (cpos.x < 0 || cpos.x >= map_.width() ||
           cpos.y < 0 || cpos.y >= map_.height()) {
-        chars[i]->place(hero_prev_pos_.x, hero_prev_pos_.y);
+        chars[i]->place(prev_pos.x, prev_pos.y);
       }
       if (cpos == prev_pos) continue;
       // Check collisions after each tick
