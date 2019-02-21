@@ -230,7 +230,7 @@ void game::render() {
   engine::write_string(hp_str, 0, engine::height()-1);
 #ifdef DEBUG
   auto pos_str = fmt::format("Pos: ({};{})", h_pos.x, h_pos.y);
-  engine::write_string(pos_str, 80 - pos_str.size(), engine::height()-1);
+  engine::write_string(pos_str, engine::width() - pos_str.size(), engine::height()-1);
 #endif
 }
 
