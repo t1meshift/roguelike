@@ -18,7 +18,7 @@ TEST_CASE("Key controls work") {
   scenes::game g(10, 10);
   auto &m = g.current_map();
   for (auto &mob : m.characters()) {
-    if (typeid(mob) == typeid(characters::Princess)) {
+    if (typeid(*mob) == typeid(characters::Princess)) {
       mob->place(0, 0);
     } else {
       mob->hp(0);
