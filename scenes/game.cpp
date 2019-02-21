@@ -246,16 +246,16 @@ void game::calc_offsets() {
   auto hero_pos = map_.hero()->pos();
 
   if (hero_pos.x < center_rect_x) {
-    if (offset_x_ > 0) --offset_x_;
+    offset_x_ -= center_rect_x - hero_pos.x;
   }
   if (hero_pos.x >= center_rect_x + center_rect_w) {
-    if (offset_x_ + field_w < map_w) ++offset_x_;
+    offset_x_ += hero_pos.x - (center_rect_x + center_rect_w);
   }
   if (hero_pos.y < center_rect_y) {
-    if (offset_y_ > 0) --offset_y_;
+    offset_y_ -= center_rect_y - hero_pos.y;
   }
   if (hero_pos.y >= center_rect_y + center_rect_h) {
-    if (offset_y_ + field_h < map_h) ++offset_y_;
+    offset_y_ += hero_pos.y - (center_rect_y + center_rect_h);
   }
 
 
