@@ -5,8 +5,8 @@
 #include "../graphics/kbd_keys.h"
 #include "../graphics.h"
 
+// TODO CTest run each test separately (I guess). Need to do something with init
 TEST_CASE("Game scene is created") {
-  graphics::init();
   scenes::game g(5, 5);
 }
 
