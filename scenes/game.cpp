@@ -11,14 +11,16 @@
 #include "../visitors/win_cond_visitor.h"
 
 namespace scenes {
-game::game(map_size_t width, map_size_t height) :
-  map_(map(width, height, map_generators::box)) {
+game::game(map_size_t width, map_size_t height, map_generator gen) :
+  map_(map(width, height, gen)) {
   hero_prev_pos_ = map_.hero()->pos();
   offset_x_ = map_.hero()->pos().x - graphics::width() / 2;
   offset_y_ = map_.hero()->pos().y - graphics::height() / 2;
   key_pressed_ = false;
   calc_offsets();
 }
+game::game(map_size_t width, map_size_t height) :
+  game(width, height, map_generators::box){}
 
 void game::input(int command) {
   auto &hero = map_.hero();

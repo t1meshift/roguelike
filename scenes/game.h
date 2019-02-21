@@ -4,6 +4,7 @@
 namespace scenes {
 class game : public base_scene {
  public:
+  game(map_size_t width, map_size_t height, map_generator gen);
   game(map_size_t width, map_size_t height);
   void input(int command) override;
   void tick() override;
