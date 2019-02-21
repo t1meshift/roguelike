@@ -57,6 +57,7 @@ add_executable(roguelike-tests
         tests/characters.cpp
         tests/map.cpp
         tests/scene_game.cpp
+        tests/game.cpp
 
         graphics.h
         graphics.cpp
