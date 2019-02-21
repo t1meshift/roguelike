@@ -131,16 +131,13 @@ void game::tick() {
       chars[i]->tick(hero->pos());
       auto char_projs = chars[i]->projectiles();
       for (auto &proj : char_projs) {
-        auto p = proj->pos();
-        if (p.x >= 0 && p.x < map_.width() &&
-            p.y >= 0 && p.y < map_.height()) {
-          map_.characters().push_back(proj);
-        }
+        map_.characters().push_back(proj);
       }
       char_projs.clear();
       auto cpos = chars[i]->pos();
       if (cpos.x < 0 || cpos.x >= map_.width() ||
           cpos.y < 0 || cpos.y >= map_.height()) {
+        // TODO remove character if its previous position was incorrect too
         chars[i]->place(prev_pos.x, prev_pos.y);
       }
       if (cpos == prev_pos) continue;

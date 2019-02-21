@@ -164,3 +164,75 @@ TEST_CASE("Offsets are calculated correctly") {
     REQUIRE(offset.y == 0);
   }
 }
+
+TEST_CASE("In-game collisions test") {
+  map_generator test_map = [](map_size_t w, map_size_t h) -> map_container {
+    map_container r;
+    r.hero = std::make_shared<characters::Knight>(0, 0);
+    r.characters.push_back(std::make_shared<characters::Princess>(1, 0));
+    r.characters.push_back(std::make_shared<characters::Wall>(0, 1));
+    return r;
+  };
+  scenes::game g(10, 10, test_map);
+  auto &m = g.current_map();
+  SECTION("Collision with walls works") {
+    g.input(Key::ARROW_DOWN);
+    g.tick();
+    REQUIRE(m.hero()->pos() == map_point{0, 0});
+  }
+  SECTION("Collision with the princess regenerates map") {
+    g.input(Key::ARROW_RIGHT);
+    g.tick();
+    g.render();
+    bool map_changed = m.characters().size() > 1;
+    REQUIRE(map_changed);
+  }
+}
+
+TEST_CASE("Dragons spawn fireballs") {
+  map_generator test_map = [](map_size_t w, map_size_t h) -> map_container {
+    map_container r;
+    r.hero = std::make_shared<characters::Knight>(0, 0);
+    r.characters.push_back(std::make_shared<characters::Dragon>(0, 4));
+    return r;
+  };
+  scenes::game g(10, 10, test_map);
+  auto &m = g.current_map();
+  m.hero()->max_hp(10000);
+  m.hero()->hp(10000);
+  for (int i = 0; i < 50; ++i) {
+    g.input(Key::ARROW_UP);
+    g.tick();
+  }
+  REQUIRE(!m.hero()->is_dead()); // The hero with 10k HP can't die from Dragon with 2 damage
+}
+
+TEST_CASE("Scene finishes if hero dies") {
+  map_generator test_map = [](map_size_t w, map_size_t h) -> map_container {
+    map_container r;
+    r.hero = std::make_shared<characters::Knight>(0, 0);
+    return r;
+  };
+  scenes::game g(10, 10, test_map);
+  g.current_map().hero()->hp(0);
+  g.tick();
+  REQUIRE(g.finished());
+}
+
+TEST_CASE("1 Knight 1 Zombie. Knight does nothing. Who'll win?") {
+  map_generator test_map = [](map_size_t w, map_size_t h) -> map_container {
+    map_container r;
+    r.hero = std::make_shared<characters::Knight>(0, 0);
+    r.characters.push_back(std::make_shared<characters::Zombie>(0, 1));
+    return r;
+  };
+  scenes::game g(10, 10, test_map);
+  SECTION("Hero must die :c") {
+    for (int i = 0; i < 50; ++i) {
+      // Zombie moves if a player has pressed a key. That's how roguelikes work.
+      g.input(Key::ARROW_UP);
+      g.tick(); // Hero must die at that time. Sad.
+    }
+    REQUIRE(g.finished());
+  }
+}
