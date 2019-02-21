@@ -69,7 +69,6 @@ matrix:
     env: Code coverage
     script:
     - "/usr/local/bin/cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug"
-    - "/usr/local/bin/cmake --build build"
     - "/usr/local/bin/cmake --build build --target roguelike-tests"
     - cd build
     - ctest --output-on-failure
