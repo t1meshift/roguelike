@@ -62,6 +62,9 @@ std::vector<std::shared_ptr<Character>> Character::projectiles() {
   spawned_projectiles_.clear();
   return ret;
 }
+bool Character::is_projectile() const {
+  return false;
+}
 
 void init_from_config(Character &c, const std::string &char_name) {
   auto &conf = Config::get();
@@ -91,18 +94,96 @@ Knight::Knight(map_size_t x, map_size_t y) {
   init_from_config(*this, "Knight");
 }
 Knight::Knight(map_point pos) : Knight(pos.x, pos.y) {}
+void Knight::accept(visitors::base_visitor &v, Character &with) {
+  v.visit(*this, with);
+}
+void Knight::accept(visitors::base_visitor &v, Knight &with) {
+  v.visit(*this, with);
+}
+void Knight::accept(visitors::base_visitor &v, Princess &with) {
+  v.visit(*this, with);
+}
+void Knight::accept(visitors::base_visitor &v, Wall &with) {
+  v.visit(*this, with);
+}
+void Knight::accept(visitors::base_visitor &v, Zombie &with) {
+  v.visit(*this, with);
+}
+void Knight::accept(visitors::base_visitor &v, Dragon &with) {
+  v.visit(*this, with);
+}
+void Knight::accept(visitors::base_visitor &v, AidKit &with) {
+  v.visit(*this, with);
+}
+void Knight::accept(visitors::base_visitor &v, Fireball &with) {
+  v.visit(*this, with);
+}
+void Knight::tick(map_point) {}
 
 Princess::Princess(map_size_t x, map_size_t y) {
   pos_ = {x, y};
   init_from_config(*this, "Princess");
 }
 Princess::Princess(map_point pos) : Princess(pos.x, pos.y) {}
+void Princess::accept(visitors::base_visitor &v, Character &with) {
+  v.visit(*this, with);
+}
+void Princess::accept(visitors::base_visitor &v, Knight &with) {
+  v.visit(*this, with);
+}
+void Princess::accept(visitors::base_visitor &v, Princess &with) {
+  v.visit(*this, with);
+}
+void Princess::accept(visitors::base_visitor &v, Wall &with) {
+  v.visit(*this, with);
+}
+void Princess::accept(visitors::base_visitor &v, Zombie &with) {
+  v.visit(*this, with);
+}
+void Princess::accept(visitors::base_visitor &v, Dragon &with) {
+  v.visit(*this, with);
+}
+void Princess::accept(visitors::base_visitor &v, AidKit &with) {
+  v.visit(*this, with);
+}
+void Princess::accept(visitors::base_visitor &v, Fireball &with) {
+  v.visit(*this, with);
+}
+bool Princess::is_dead() const {
+  return false;
+}
+void Princess::hurt(hp_t) {}
+void Princess::tick(map_point) {}
 
 Zombie::Zombie(map_size_t x, map_size_t y) {
   pos_ = {x, y};
   init_from_config(*this, "Zombie");
 }
 Zombie::Zombie(map_point pos) : Zombie(pos.x, pos.y) {}
+void Zombie::accept(visitors::base_visitor &v, Character &with) {
+  v.visit(*this, with);
+}
+void Zombie::accept(visitors::base_visitor &v, Knight &with) {
+  v.visit(*this, with);
+}
+void Zombie::accept(visitors::base_visitor &v, Princess &with) {
+  v.visit(*this, with);
+}
+void Zombie::accept(visitors::base_visitor &v, Wall &with) {
+  v.visit(*this, with);
+}
+void Zombie::accept(visitors::base_visitor &v, Zombie &with) {
+  v.visit(*this, with);
+}
+void Zombie::accept(visitors::base_visitor &v, Dragon &with) {
+  v.visit(*this, with);
+}
+void Zombie::accept(visitors::base_visitor &v, AidKit &with) {
+  v.visit(*this, with);
+}
+void Zombie::accept(visitors::base_visitor &v, Fireball &with) {
+  v.visit(*this, with);
+}
 
 Dragon::Dragon(map_size_t x, map_size_t y) {
   pos_ = {x, y};
@@ -147,12 +228,65 @@ void Dragon::tick(map_point hero_pos) {
     }
   }
 }
+void Dragon::accept(visitors::base_visitor &v, Character &with) {
+  v.visit(*this, with);
+}
+void Dragon::accept(visitors::base_visitor &v, Knight &with) {
+  v.visit(*this, with);
+}
+void Dragon::accept(visitors::base_visitor &v, Princess &with) {
+  v.visit(*this, with);
+}
+void Dragon::accept(visitors::base_visitor &v, Wall &with) {
+  v.visit(*this, with);
+}
+void Dragon::accept(visitors::base_visitor &v, Zombie &with) {
+  v.visit(*this, with);
+}
+void Dragon::accept(visitors::base_visitor &v, Dragon &with) {
+  v.visit(*this, with);
+}
+void Dragon::accept(visitors::base_visitor &v, AidKit &with) {
+  v.visit(*this, with);
+}
+void Dragon::accept(visitors::base_visitor &v, Fireball &with) {
+  v.visit(*this, with);
+}
 
 Wall::Wall(map_size_t x, map_size_t y) {
   pos_ = {x, y};
   init_from_config(*this, "Wall");
 }
 Wall::Wall(map_point pos) : Wall(pos.x, pos.y) {}
+void Wall::accept(visitors::base_visitor &v, Character &with) {
+  v.visit(*this, with);
+}
+void Wall::accept(visitors::base_visitor &v, Knight &with) {
+  v.visit(*this, with);
+}
+void Wall::accept(visitors::base_visitor &v, Princess &with) {
+  v.visit(*this, with);
+}
+void Wall::accept(visitors::base_visitor &v, Wall &with) {
+  v.visit(*this, with);
+}
+void Wall::accept(visitors::base_visitor &v, Zombie &with) {
+  v.visit(*this, with);
+}
+void Wall::accept(visitors::base_visitor &v, Dragon &with) {
+  v.visit(*this, with);
+}
+void Wall::accept(visitors::base_visitor &v, AidKit &with) {
+  v.visit(*this, with);
+}
+void Wall::accept(visitors::base_visitor &v, Fireball &with) {
+  v.visit(*this, with);
+}
+bool Wall::is_dead() const {
+  return false;
+}
+void Wall::hurt(hp_t) {}
+void Wall::tick(map_point) {}
 
 bool PickupItem::is_dead() const {
   return picked_up_;
@@ -160,6 +294,7 @@ bool PickupItem::is_dead() const {
 void PickupItem::pick_up() {
   picked_up_ = true;
 }
+void PickupItem::hurt(hp_t) {}
 
 AidKit::AidKit(map_size_t x, map_size_t y) {
   pos_ = {x, y};
@@ -169,6 +304,31 @@ AidKit::AidKit(map_point pos) : AidKit(pos.x, pos.y) {}
 hp_t AidKit::damage() const {
   return damage_;
 }
+void AidKit::accept(visitors::base_visitor &v, Character &with) {
+  v.visit(*this, with);
+}
+void AidKit::accept(visitors::base_visitor &v, Knight &with) {
+  v.visit(*this, with);
+}
+void AidKit::accept(visitors::base_visitor &v, Princess &with) {
+  v.visit(*this, with);
+}
+void AidKit::accept(visitors::base_visitor &v, Wall &with) {
+  v.visit(*this, with);
+}
+void AidKit::accept(visitors::base_visitor &v, Zombie &with) {
+  v.visit(*this, with);
+}
+void AidKit::accept(visitors::base_visitor &v, Dragon &with) {
+  v.visit(*this, with);
+}
+void AidKit::accept(visitors::base_visitor &v, AidKit &with) {
+  v.visit(*this, with);
+}
+void AidKit::accept(visitors::base_visitor &v, Fireball &with) {
+  v.visit(*this, with);
+}
+void AidKit::tick(map_point) {}
 
 void Projectile::speed(map_size_t dx, map_size_t dy) {
   speed_x_ = dx;
@@ -177,6 +337,9 @@ void Projectile::speed(map_size_t dx, map_size_t dy) {
 void Projectile::tick(map_point) {
   pos_.x += speed_x_;
   pos_.y += speed_y_;
+}
+bool Projectile::is_projectile() const {
+  return true;
 }
 
 Fireball::Fireball(map_size_t x, map_size_t y) {
@@ -188,6 +351,30 @@ Fireball::Fireball(map_size_t x, map_size_t y, map_size_t dx, map_size_t dy)
   speed(dx, dy);
 }
 Fireball::Fireball(map_point pos) : Fireball(pos.x, pos.y) {}
+void Fireball::accept(visitors::base_visitor &v, Character &with) {
+  v.visit(*this, with);
+}
+void Fireball::accept(visitors::base_visitor &v, Knight &with) {
+  v.visit(*this, with);
+}
+void Fireball::accept(visitors::base_visitor &v, Princess &with) {
+  v.visit(*this, with);
+}
+void Fireball::accept(visitors::base_visitor &v, Wall &with) {
+  v.visit(*this, with);
+}
+void Fireball::accept(visitors::base_visitor &v, Zombie &with) {
+  v.visit(*this, with);
+}
+void Fireball::accept(visitors::base_visitor &v, Dragon &with) {
+  v.visit(*this, with);
+}
+void Fireball::accept(visitors::base_visitor &v, AidKit &with) {
+  v.visit(*this, with);
+}
+void Fireball::accept(visitors::base_visitor &v, Fireball &with) {
+  v.visit(*this, with);
+}
 
 namespace visitors {
 void base_visitor::visit(Knight&, Knight&){}

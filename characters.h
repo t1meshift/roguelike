@@ -4,12 +4,6 @@
 #include "characters/types.h"
 #include "map/types.h"
 
-#define __char_invincible \
-bool is_dead() const override { \
-  return false; \
-}\
-void hurt(hp_t) override {}
-
 
 namespace characters {
 class Character;
@@ -106,9 +100,7 @@ class Character {
   void sym(sym_t symbol);
   map_point pos() const;
   virtual bool is_dead() const;
-  virtual bool is_projectile() const {
-    return false;
-  }
+  virtual bool is_projectile() const;
   std::vector<std::shared_ptr<Character>> projectiles();
 
   virtual void accept(visitors::base_visitor &v, Character &with) = 0;
@@ -137,95 +129,49 @@ class Knight : public Character {
  public:
   Knight(map_size_t x, map_size_t y);
   explicit Knight(map_point pos);
-  void tick(map_point) override {};
-  void accept(visitors::base_visitor &v, Character &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Knight &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Princess &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Wall &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Zombie &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Dragon &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, AidKit &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Fireball &with) override {
-    v.visit(*this, with);
-  }
+  void tick(map_point) override;;
+  void accept(visitors::base_visitor &v, Character &with) override;
+  void accept(visitors::base_visitor &v, Knight &with) override;
+  void accept(visitors::base_visitor &v, Princess &with) override;
+  void accept(visitors::base_visitor &v, Wall &with) override;
+  void accept(visitors::base_visitor &v, Zombie &with) override;
+  void accept(visitors::base_visitor &v, Dragon &with) override;
+  void accept(visitors::base_visitor &v, AidKit &with) override;
+  void accept(visitors::base_visitor &v, Fireball &with) override;
 };
 
 class Princess : public Character {
  public:
   Princess(map_size_t x, map_size_t y);
   explicit Princess(map_point pos);
-  __char_invincible;
-  void tick(map_point) override {};
-  void accept(visitors::base_visitor &v, Character &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Knight &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Princess &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Wall &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Zombie &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Dragon &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, AidKit &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Fireball &with) override {
-    v.visit(*this, with);
-  }
+  bool is_dead() const override;
+  void hurt(hp_t) override;
+  void tick(map_point) override;
+  void accept(visitors::base_visitor &v, Character &with) override;
+  void accept(visitors::base_visitor &v, Knight &with) override;
+  void accept(visitors::base_visitor &v, Princess &with) override;
+  void accept(visitors::base_visitor &v, Wall &with) override;
+  void accept(visitors::base_visitor &v, Zombie &with) override;
+  void accept(visitors::base_visitor &v, Dragon &with) override;
+  void accept(visitors::base_visitor &v, AidKit &with) override;
+  void accept(visitors::base_visitor &v, Fireball &with) override;
 };
 
 class Wall : public Character {
  public:
   Wall(map_size_t x, map_size_t y);
   explicit Wall(map_point pos);
-  __char_invincible;
-  void tick(map_point) override {};
-  void accept(visitors::base_visitor &v, Character &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Knight &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Princess &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Wall &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Zombie &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Dragon &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, AidKit &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Fireball &with) override {
-    v.visit(*this, with);
-  }
+  bool is_dead() const override;
+  void hurt(hp_t) override;
+  void tick(map_point) override;
+  void accept(visitors::base_visitor &v, Character &with) override;
+  void accept(visitors::base_visitor &v, Knight &with) override;
+  void accept(visitors::base_visitor &v, Princess &with) override;
+  void accept(visitors::base_visitor &v, Wall &with) override;
+  void accept(visitors::base_visitor &v, Zombie &with) override;
+  void accept(visitors::base_visitor &v, Dragon &with) override;
+  void accept(visitors::base_visitor &v, AidKit &with) override;
+  void accept(visitors::base_visitor &v, Fireball &with) override;
 };
 
 class Monster : public Character {
@@ -237,30 +183,14 @@ class Zombie : public Monster {
  public:
   Zombie(map_size_t x, map_size_t y);
   explicit Zombie(map_point pos);
-  void accept(visitors::base_visitor &v, Character &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Knight &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Princess &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Wall &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Zombie &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Dragon &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, AidKit &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Fireball &with) override {
-    v.visit(*this, with);
-  }
+  void accept(visitors::base_visitor &v, Character &with) override;
+  void accept(visitors::base_visitor &v, Knight &with) override;
+  void accept(visitors::base_visitor &v, Princess &with) override;
+  void accept(visitors::base_visitor &v, Wall &with) override;
+  void accept(visitors::base_visitor &v, Zombie &with) override;
+  void accept(visitors::base_visitor &v, Dragon &with) override;
+  void accept(visitors::base_visitor &v, AidKit &with) override;
+  void accept(visitors::base_visitor &v, Fireball &with) override;
 };
 
 class Dragon : public Monster {
@@ -268,37 +198,21 @@ class Dragon : public Monster {
   Dragon(map_size_t x, map_size_t y);
   explicit Dragon(map_point pos);
   void tick(map_point hero_pos) override;
-  void accept(visitors::base_visitor &v, Character &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Knight &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Princess &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Wall &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Zombie &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Dragon &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, AidKit &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Fireball &with) override {
-    v.visit(*this, with);
-  }
+  void accept(visitors::base_visitor &v, Character &with) override;
+  void accept(visitors::base_visitor &v, Knight &with) override;
+  void accept(visitors::base_visitor &v, Princess &with) override;
+  void accept(visitors::base_visitor &v, Wall &with) override;
+  void accept(visitors::base_visitor &v, Zombie &with) override;
+  void accept(visitors::base_visitor &v, Dragon &with) override;
+  void accept(visitors::base_visitor &v, AidKit &with) override;
+  void accept(visitors::base_visitor &v, Fireball &with) override;
 };
 
 class PickupItem : public Character {
  public:
   using Character::damage;
   bool is_dead() const override;
-  void hurt(hp_t) override {}
+  void hurt(hp_t) override;
   virtual void pick_up();
  protected:
   bool picked_up_ = false;
@@ -310,40 +224,22 @@ class AidKit : public PickupItem {
   using Character::damage;
   AidKit(map_size_t x, map_size_t y);
   explicit AidKit(map_point pos);
-  void tick(map_point) override {};
+  void tick(map_point) override;
   hp_t damage() const override;
-  void accept(visitors::base_visitor &v, Character &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Knight &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Princess &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Wall &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Zombie &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Dragon &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, AidKit &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Fireball &with) override {
-    v.visit(*this, with);
-  }
+  void accept(visitors::base_visitor &v, Character &with) override;
+  void accept(visitors::base_visitor &v, Knight &with) override;
+  void accept(visitors::base_visitor &v, Princess &with) override;
+  void accept(visitors::base_visitor &v, Wall &with) override;
+  void accept(visitors::base_visitor &v, Zombie &with) override;
+  void accept(visitors::base_visitor &v, Dragon &with) override;
+  void accept(visitors::base_visitor &v, AidKit &with) override;
+  void accept(visitors::base_visitor &v, Fireball &with) override;
 };
 
 class Projectile : public Character {
  public:
   using Character::damage;
-  bool is_projectile() const override {
-    return true;
-  }
+  bool is_projectile() const override;
   void tick(map_point) override;
   virtual void speed(map_size_t dx, map_size_t dy);
  protected:
@@ -357,29 +253,13 @@ class Fireball : public Projectile {
   Fireball(map_size_t x, map_size_t y, map_size_t dx, map_size_t dy);
   Fireball(map_point pos);
   using Character::damage;
-  void accept(visitors::base_visitor &v, Character &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Knight &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Princess &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Wall &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Zombie &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Dragon &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, AidKit &with) override {
-    v.visit(*this, with);
-  }
-  void accept(visitors::base_visitor &v, Fireball &with) override {
-    v.visit(*this, with);
-  }
+  void accept(visitors::base_visitor &v, Character &with) override;
+  void accept(visitors::base_visitor &v, Knight &with) override;
+  void accept(visitors::base_visitor &v, Princess &with) override;
+  void accept(visitors::base_visitor &v, Wall &with) override;
+  void accept(visitors::base_visitor &v, Zombie &with) override;
+  void accept(visitors::base_visitor &v, Dragon &with) override;
+  void accept(visitors::base_visitor &v, AidKit &with) override;
+  void accept(visitors::base_visitor &v, Fireball &with) override;
 };
 }
