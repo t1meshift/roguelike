@@ -2,3 +2,5 @@ coverage:
   ignore:
     - "external"
     - "build"
+    - "graphics"
+    - "graphics.cpp"
