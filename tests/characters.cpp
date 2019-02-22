@@ -156,25 +156,125 @@ TEST_CASE("Dragon AI test", "[character][dragon][ai]") {
   chr::Dragon c(map_point{0, 0});
   PRNG rnd;
   SECTION("Dragon moves to hero's position or throws a fireball in his direction") {
-    for (int i = 0; i < 100; ++i) {
-      auto hx = rnd.get<map_size_t>(-2, 2);
-      auto hy = rnd.get<map_size_t>(-2, 2);
-      int dist = std::abs(hx) + std::abs(hy);
-      if (dist != 0) {
-        c.tick(map_point{hx, hy});
-        int new_dist = std::abs(c.pos().x - hx) + std::abs(c.pos().y - hy);
+    {
+      auto hpos = map_point{-1, 0};
+      for (int i = 0; i < 50; i++) {
+      int dist = std::abs(hpos.x) + std::abs(hpos.y);
+        c.tick(hpos);
+        int new_dist = std::abs(c.pos().x - hpos.x) + std::abs(c.pos().y - hpos.y);
         bool flag = new_dist < dist;
         if (new_dist == dist) {
           auto projs = c.projectiles();
           int proj_dist = 1000;
           if (!projs.empty()) {
-            proj_dist = std::abs(projs[0]->pos().x - hx) + std::abs(projs[0]->pos().y - hy);
+            proj_dist = std::abs(projs[0]->pos().x - hpos.x) + std::abs(projs[0]->pos().y - hpos.y);
           }
           flag |= projs.size() == 1 && proj_dist < new_dist;
         }
         REQUIRE(flag);
+        c.place(0, 0);
       }
-      c.place(0, 0);
+    }
+    {
+      auto hpos = map_point{1, 0};
+      for (int i = 0; i < 50; i++) {
+      int dist = std::abs(hpos.x) + std::abs(hpos.y);
+        c.tick(hpos);
+        int new_dist = std::abs(c.pos().x - hpos.x) + std::abs(c.pos().y - hpos.y);
+        bool flag = new_dist < dist;
+        if (new_dist == dist) {
+          auto projs = c.projectiles();
+          int proj_dist = 1000;
+          if (!projs.empty()) {
+            proj_dist = std::abs(projs[0]->pos().x - hpos.x) + std::abs(projs[0]->pos().y - hpos.y);
+          }
+          flag |= projs.size() == 1 && proj_dist < new_dist;
+        }
+        REQUIRE(flag);
+        c.place(0, 0);
+      }
+    }
+    {
+      auto hpos = map_point{0, -1};
+      for (int i = 0; i < 50; i++) {
+      int dist = std::abs(hpos.x) + std::abs(hpos.y);
+        c.tick(hpos);
+        int new_dist = std::abs(c.pos().x - hpos.x) + std::abs(c.pos().y - hpos.y);
+        bool flag = new_dist < dist;
+        if (new_dist == dist) {
+          auto projs = c.projectiles();
+          int proj_dist = 1000;
+          if (!projs.empty()) {
+            proj_dist = std::abs(projs[0]->pos().x - hpos.x) + std::abs(projs[0]->pos().y - hpos.y);
+          }
+          flag |= projs.size() == 1 && proj_dist < new_dist;
+        }
+        REQUIRE(flag);
+        c.place(0, 0);
+      }
+    }
+    {
+      auto hpos = map_point{0, 1};
+      for (int i = 0; i < 50; i++) {
+      int dist = std::abs(hpos.x) + std::abs(hpos.y);
+        c.tick(hpos);
+        int new_dist = std::abs(c.pos().x - hpos.x) + std::abs(c.pos().y - hpos.y);
+        bool flag = new_dist < dist;
+        if (new_dist == dist) {
+          auto projs = c.projectiles();
+          int proj_dist = 1000;
+          if (!projs.empty()) {
+            proj_dist = std::abs(projs[0]->pos().x - hpos.x) + std::abs(projs[0]->pos().y - hpos.y);
+          }
+          flag |= projs.size() == 1 && proj_dist < new_dist;
+        }
+        REQUIRE(flag);
+        c.place(0, 0);
+      }
+    }
+    {
+      auto hpos = map_point{-1, -1};
+      for (int i = 0; i < 50; i++) {
+      int dist = std::abs(hpos.x) + std::abs(hpos.y);
+        c.tick(hpos);
+        int new_dist = std::abs(c.pos().x - hpos.x) + std::abs(c.pos().y - hpos.y);
+        bool flag = new_dist < dist;
+        REQUIRE(flag);
+        c.place(0, 0);
+      }
+    }
+    {
+      auto hpos = map_point{1, 1};
+      for (int i = 0; i < 50; i++) {
+      int dist = std::abs(hpos.x) + std::abs(hpos.y);
+        c.tick(hpos);
+        int new_dist = std::abs(c.pos().x - hpos.x) + std::abs(c.pos().y - hpos.y);
+        bool flag = new_dist < dist;
+        REQUIRE(flag);
+        c.place(0, 0);
+      }
+    }
+    {
+      auto hpos = map_point{-1, 1};
+      for (int i = 0; i < 50; i++) {
+      int dist = std::abs(hpos.x) + std::abs(hpos.y);
+        c.tick(hpos);
+        int new_dist = std::abs(c.pos().x - hpos.x) + std::abs(c.pos().y - hpos.y);
+        bool flag = new_dist < dist;
+        REQUIRE(flag);
+        c.place(0, 0);
+      }
+    }
+    {
+      auto hpos = map_point{1, -1};
+      for (int i = 0; i < 50; i++) {
+      int dist = std::abs(hpos.x) + std::abs(hpos.y);
+        c.tick(hpos);
+        int new_dist = std::abs(c.pos().x - hpos.x) + std::abs(c.pos().y - hpos.y);
+        bool flag = new_dist < dist;
+        REQUIRE(flag);
+        c.place(0, 0);
+      }
     }
   }
 }
